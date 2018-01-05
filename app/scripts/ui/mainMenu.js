@@ -1,7 +1,8 @@
+import main from "../main.js"
+
 const module = {};
 
-module.run = function(stage) {
-  stage.enableMouseOver(20);
+module.run = function() {
 
   // Menu assets
   const menu_bg = new createjs.Bitmap("assets/images/menu_bg.jpg");
@@ -50,13 +51,13 @@ module.run = function(stage) {
   menu_startBtn.y = 540;
   menu_startBtn.regX = 520;*/
 
-  // Add assets to stage
-  stage.addChild(menu_bg);
-  stage.addChild(menu_title);
-  stage.addChild(menu_start);
-  stage.addChild(menu_start2);
-  stage.addChild(menu_gj);
-  stage.addChild(menu_credits);
+  // Add assets to UI container
+  main.ui.addChild(menu_bg);
+  main.ui.addChild(menu_title);
+  main.ui.addChild(menu_start);
+  main.ui.addChild(menu_start2);
+  main.ui.addChild(menu_gj);
+  main.ui.addChild(menu_credits);
 
   // Animation for BG (Enter)
   createjs.Tween.get(menu_bg, { loop: false })
@@ -69,13 +70,13 @@ module.run = function(stage) {
 
   // Animation for GJ Logo (Enter)
   createjs.Tween.get(menu_gj, { loop: false })
-    .wait(1500)
-    .to({alpha: 1, y: 840}, 500, createjs.Ease.getPowInOut(2));
+    .wait(1300)
+    .to({alpha: 1, y: 840}, 1000, createjs.Ease.getPowInOut(2));
 
   // Animation for Credits (Enter)
   createjs.Tween.get(menu_credits, { loop: false })
     .wait(1700)
-    .to({alpha: 1, x: 600}, 500, createjs.Ease.getPowInOut(2));
+    .to({alpha: 1, x: 600}, 1000, createjs.Ease.getPowInOut(2));
 
   // Animation for Start Game Button (Enter)
   createjs.Tween.get(menu_start).wait(2000).to({alpha: 1}, 750, createjs.Ease.getPowInOut(2)).play(
@@ -90,9 +91,6 @@ module.run = function(stage) {
       .to({ y: 530 }, 750, createjs.Ease.getPowInOut(2))
       .to({ y: 540 }, 750, createjs.Ease.getPowInOut(2))
   );
-
-  createjs.Ticker.setFPS(60);
-  createjs.Ticker.addEventListener("tick", stage);
 
   // Switch to Active Start Game button on hoverover
   menu_start.addEventListener("mouseover", function(event) {
