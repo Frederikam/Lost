@@ -36,7 +36,7 @@ circle.on("pressup", function(event) {
 var boundsContainer = new createjs.Container();
 var boundLine = new createjs.Shape();
 	boundLine.graphics
-	.setStrokeStyle(10, 'round')
+	.setStrokeStyle(10, "round")
 	.beginStroke("Red")
 	.moveTo(0,0)
 	.lineTo(300, 30)
