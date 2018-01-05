@@ -9,6 +9,8 @@ const stages = [stage1, stage2, stage3, stage4];
 let stageSelected = false;
 const buttons = [];
 
+let stageBackground = null;
+
 module.run = function() {
   const canvas = document.getElementById("game");
   main.ui.alpha = 0;
@@ -50,6 +52,12 @@ function onSelect(stageId) {
     createjs.Tween.get(button)
       .to({y: button.y + 25}, 500);
   });
+
+  if (stages[stageId].background !== undefined) {
+    main.background.removeChild(stageBackground);
+    stageBackground = new createjs.Bitmap(stages[stageId].background);
+    main.background.addChild(stageBackground);
+  }
 }
 
 export default module;
