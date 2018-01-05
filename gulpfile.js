@@ -1,3 +1,4 @@
+/* eslint-disable */
 // generated on 2018-01-04 using generator-webapp 3.0.1
 const gulp = require('gulp');
 const gulpLoadPlugins = require('gulp-load-plugins');
@@ -20,7 +21,7 @@ gulp.task('styles', () => {
     .pipe($.if(dev, $.sourcemaps.init()))
     .pipe($.autoprefixer({browsers: ['> 1%', 'last 2 versions', 'Firefox ESR']}))
     .pipe($.if(dev, $.sourcemaps.write()))
-    .pipe(gulp.dest(dev ? '.tmp/styles' : '/dist/styles'))
+    .pipe(gulp.dest(dev ? '.tmp/styles' : 'dist/styles'))
     .pipe(reload({stream: true}));
 });
 
