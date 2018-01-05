@@ -1,4 +1,5 @@
 import main from "../main.js"
+import stageSelect from "./stageSelect.js"
 
 const module = {};
 
@@ -112,7 +113,8 @@ module.run = function() {
   menu_start2.addEventListener("mousedown", function(event) {
     // Animation for BG (Exit)
     createjs.Tween.get(menu_bg, { loop: false })
-      .to({alpha: 0}, 2000);
+      .to({alpha: 0}, 2000)
+      .call(stageSelect.run);
 
     // Animation for Title (Enter)
     createjs.Tween.get(menu_title, { loop: false })
