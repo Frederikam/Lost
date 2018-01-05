@@ -20,7 +20,7 @@ gulp.task('styles', () => {
     .pipe($.if(dev, $.sourcemaps.init()))
     .pipe($.autoprefixer({browsers: ['> 1%', 'last 2 versions', 'Firefox ESR']}))
     .pipe($.if(dev, $.sourcemaps.write()))
-    .pipe(gulp.dest('.tmp/styles'))
+    .pipe(gulp.dest(dev ? '.tmp/styles' : '/dist/styles'))
     .pipe(reload({stream: true}));
 });
 
@@ -38,7 +38,7 @@ gulp.task('scripts', () => {
     .pipe(buffer())
     .pipe($.sourcemaps.init({loadMaps: true}))
     .pipe($.if(dev, $.sourcemaps.write('.')))
-    .pipe(gulp.dest('.tmp/scripts'))
+    .pipe(gulp.dest(dev ? '.tmp/scripts' : 'dist/scripts'))
     .pipe(reload({stream: true}));
 });
 
