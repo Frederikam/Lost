@@ -1,4 +1,5 @@
 import mainMenu from './ui/mainMenu.js'
+import dialogue from './ui/dialogue.js'
 import preload from './preload.js'
 const module = {};
 
@@ -38,9 +39,8 @@ preload.load(function() {
     .to({alpha: 0}, 500)
     .call(function() {
       mainMenu.run(module.stage);
+      dialogue.onLoad();
     });
 });
 
 export default module
-
-
