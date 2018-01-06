@@ -12,6 +12,7 @@ module.run = function() {
   const menu_start2 = new createjs.Bitmap("assets/images/menu_start2_btn.png");
   const menu_gj = new createjs.Bitmap("assets/images/menu_game_jam_logo.png");
   const menu_credits = new createjs.Bitmap("assets/images/menu_credits.png");
+  module.background = menu_bg;
 
   // Asset coordinates
   menu_bg.x = 0;

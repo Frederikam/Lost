@@ -1,4 +1,5 @@
 import mainMenu from './ui/mainMenu.js'
+//import mainMenu from './stage3/stage3.js'
 import dialogue from './ui/dialogue.js'
 import preload from './preload.js'
 const module = {};
@@ -42,5 +43,23 @@ preload.load(function() {
       dialogue.onLoad();
     });
 });
+
+const handleViewport = function() {
+  let style = document.getElementById("game").style;
+  if (window.innerWidth * (1080/1920) <= window.innerHeight) {
+    // By width
+    const h  = window.innerWidth * (1080/1920);
+    style.height = h + "px";
+    style.width = window.innerWidth  + "px";
+    style.marginTop = (window.innerHeight - h) / 2 + "px";
+  } else {
+    // By height
+    style.height = window.innerHeight + "px";
+    style.width = window.innerHeight * (1929/1080) + "px";
+    style.marginTop = null;
+  }
+};
+window.addEventListener('resize', handleViewport);
+handleViewport();
 
 export default module
