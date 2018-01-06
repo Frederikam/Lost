@@ -14,8 +14,10 @@ module.background = "assets/images/stage3/background3.jpg";
 
 const pieces = [];
 let mapContainer;
+let ended = false;
 
 module.run = function () {
+  ended = false;
   mapContainer = new createjs.Container();
   mapContainer.x = 1920/2;
   mapContainer.y = 1080/2;
@@ -38,6 +40,8 @@ module.run = function () {
       piece.rotation = Math.floor(Math.random() * 4) * 90;
       mapContainer.addChild(piece);
       piece.addEventListener("mousedown", function(event) {
+        if(isComplete()) return;
+
         if (event.nativeEvent.button === 2) {
           onRightMouseDown(event)
         } else {
@@ -101,7 +105,6 @@ function tick() {
     misplacedTile = fromTile;
     fromTile.x = mouseDownEvent.currentTarget.column * rowWidth + imgWidth/rows/2;
     fromTile.y = mouseDownEvent.currentTarget.row * rowWidth + imgWidth/rows/2;
-    console.log(fromTile.x+":"+fromTile.y);
   }
 }
 
@@ -115,8 +118,20 @@ function onLeftMouseDown(event) {
   createjs.Ticker.addEventListener("tick", tick);
 }
 
+let isRotating = false;
+function onRightMouseDown(event) {
+  if (isRotating) return;
+  isRotating = true;
+  createjs.Tween.get(event.currentTarget)
+    .to({rotation: event.currentTarget.rotation + 90}, 200)
+    .call(function() {
+      isRotating = false;
+      if (isComplete()) setTimeout(onComplete, 2000)
+    })
+}
+
 function onMouseUp(event) {
-  if (event.nativeEvent.button !== 0) return;
+  if (event.nativeEvent.button !== 0 || isComplete()) return;
 
   createjs.Ticker.removeEventListener("tick", tick);
   const pt = mapContainer.globalToLocal(mapContainer.stage.mouseX, mapContainer.stage.mouseY);
@@ -133,17 +148,8 @@ function onMouseUp(event) {
     mouseDownEvent.currentTarget.column = newTilePos.column;
     restorePosition(mouseDownEvent.currentTarget);
   }
-}
 
-let isRotating = false;
-function onRightMouseDown(event) {
-  if (isRotating) return;
-  isRotating = true;
-  createjs.Tween.get(event.currentTarget)
-    .to({rotation: event.currentTarget.rotation + 90}, 200)
-    .call(function() {
-      isRotating = false;
-    })
+  if (isComplete()) setTimeout(onComplete, 2000)
 }
 
 function restorePosition(piece) {
@@ -153,6 +159,29 @@ function restorePosition(piece) {
     piece.x = piece.column * rowWidth + imgWidth/rows/2;
     piece.y = piece.row * rowWidth + imgWidth/rows/2;
   }
+}
+
+function isComplete() {
+  for (let i = 0; i < rows*rows; i++) {
+    let piece = pieces[i];
+    if (piece.currentFrame !== piece.row * rows + piece.column || piece.rotation % 360 !== 0) return false;
+  }
+  return true;
+}
+
+function onComplete() {
+  if (ended) return; // Debounce
+  ended = true;
+  console.log("Completed!");
+
+  // TODO: Dialogue
+
+  createjs.Tween.get(mapContainer)
+    .to({y: mapContainer.y + 50, alpha: 0}, 1000)
+    .call(function() {
+      main.foreground.removeChild(mapContainer);
+    })
+
 }
 
 // Copy paste driven development
