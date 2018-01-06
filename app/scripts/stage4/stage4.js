@@ -1,5 +1,6 @@
 import main from "../main.js"
 import Ball from "../puzzle-cube/ball.js"
+import Slider from "../puzzle-cube/slider.js"
 import Track from "../puzzle-cube/track.js"
 import TrackGrid from "../puzzle-cube/track-grid.js"
 
@@ -12,14 +13,15 @@ module.run = function () {
 	//TODO: Remove updates from event handlers if we move to a tick-based system instead of a reactive one
 	var ball = new Ball(5, "red", {x: 500,  y: 200});
 
-	var tracksContainer = new createjs.Container();	
+	var tracksContainer = new createjs.Container();
 	var gridSideOne = new TrackGrid();
 	tracksContainer.addChild(gridSideOne.displayObject);
 
+	var slider = new Slider({x: 706, y:0}, 500, "vertical")
 
 	stage.addChild(tracksContainer);
 	stage.addChild(ball.displayObject);
-
+	stage.addChild(slider.displayObject);
 	stage.update();
 
 	//event listeners
@@ -45,6 +47,23 @@ module.run = function () {
 		ball.held = false;
 		stage.update();
 	});
+
+	slider.displayObject.on("pressmove", function(event) {
+		console.log(event);
+		//event.target.x = event.stageX;
+		if(event.stageY > 100 && event.stageY < 700) {
+			event.target.y = event.stageY;	
+		}
+		
+		//if(slider.orientation === "horizontal") {
+		//	event.target.x = event.stageX;
+		//}
+		//if(slider.orientation === "vertical") {
+		//	event.target.y = event.stageY;
+		//}
+		stage.update();
+	});
+
 };
 
 export default module;
