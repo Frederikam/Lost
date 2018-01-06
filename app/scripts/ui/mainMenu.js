@@ -13,9 +13,6 @@ module.run = function() {
   const menu_gj = new createjs.Bitmap("assets/images/menu_game_jam_logo.png");
   const menu_credits = new createjs.Bitmap("assets/images/menu_credits.png");
 
-  console.log("Test!");
-  console.log(menu_bg);
-
   // Asset coordinates
   menu_bg.x = 0;
   menu_bg.y = 0;
@@ -24,19 +21,19 @@ module.run = function() {
   menu_bg.alpha = 0;
 
   menu_title.x = 960;
-  menu_title.y = 280;
+  menu_title.y = 380;
   menu_title.regX = 520;
   menu_title.alpha = 0;
   menu_title.scaleX = .5;
   menu_title.scaleY = .5;
 
   menu_start.x = 960;
-  menu_start.y = 540;
+  menu_start.y = 640;
   menu_start.regX = 293;
   menu_start.alpha = 0;
 
   menu_start2.x = 960;
-  menu_start2.y = 540;
+  menu_start2.y = 640;
   menu_start2.regX = 293;
   menu_start2.alpha = 0;
 
@@ -56,7 +53,7 @@ module.run = function() {
   menu_startBtn.regX = 520;*/
 
   // Add assets to UI container
-  main.ui.addChild(menu_bg);
+  main.background.addChild(menu_bg);
   main.ui.addChild(menu_title);
   main.ui.addChild(menu_start);
   main.ui.addChild(menu_start2);
@@ -70,7 +67,7 @@ module.run = function() {
   // Animation for Title (Enter)
   createjs.Tween.get(menu_title, { loop: false })
     .wait(500)
-    .to({alpha: 1, y: 180, scaleX: 1, scaleY: 1}, 750, createjs.Ease.getPowInOut(2));
+    .to({alpha: 1, y: 280, scaleX: 1, scaleY: 1}, 750, createjs.Ease.getPowInOut(2));
 
   // Animation for GJ Logo (Enter)
   createjs.Tween.get(menu_gj, { loop: false })
@@ -85,15 +82,15 @@ module.run = function() {
   // Animation for Start Game Button (Enter)
   createjs.Tween.get(menu_start).wait(2000).to({alpha: 1}, 750, createjs.Ease.getPowInOut(2)).play(
     createjs.Tween.get(menu_start, { paused: true, loop: true })
-      .to({ y: 530 }, 750, createjs.Ease.getPowInOut(2))
-      .to({ y: 540 }, 750, createjs.Ease.getPowInOut(2))
+      .to({ y: 630 }, 750, createjs.Ease.getPowInOut(2))
+      .to({ y: 640 }, 750, createjs.Ease.getPowInOut(2))
   );
 
   // Animation for Start Game 2 Button (Enter, but hidden)
   createjs.Tween.get(menu_start2).wait(2000).to({}, 750, createjs.Ease.getPowInOut(2)).play(
     createjs.Tween.get(menu_start2, { paused: true, loop: true })
-      .to({ y: 530 }, 750, createjs.Ease.getPowInOut(2))
-      .to({ y: 540 }, 750, createjs.Ease.getPowInOut(2))
+      .to({ y: 630 }, 750, createjs.Ease.getPowInOut(2))
+      .to({ y: 640 }, 750, createjs.Ease.getPowInOut(2))
   );
 
   // Switch to Active Start Game button on hoverover
@@ -116,20 +113,20 @@ module.run = function() {
   menu_start2.addEventListener("mousedown", function(event) {
     // Animation for BG (Exit)
     createjs.Tween.get(menu_bg, { loop: false })
-      .to({alpha: 0}, 2000)
+      .to({x: -1920}, 1250, createjs.Ease.getPowInOut(2))
       .call(stageSelect.run);
 
     // Animation for Title (Enter)
     createjs.Tween.get(menu_title, { loop: false })
-      .to({alpha: 1, x: -620}, 1250, createjs.Ease.getPowInOut(2));
+      .to({alpha: 1, x: menu_title.x - 1920}, 1250, createjs.Ease.getPowInOut(2));
 
     // Animation for GJ Logo (Enter)
     createjs.Tween.get(menu_gj, { loop: false })
-      .to({alpha: 1, x: -1330}, 1250, createjs.Ease.getPowInOut(2));
+      .to({alpha: 1, x: menu_gj.x - 1920}, 1250, createjs.Ease.getPowInOut(2));
 
     // Animation for Credits (Enter)
     createjs.Tween.get(menu_credits, { loop: false })
-      .to({alpha: 1, x: -1060}, 1250, createjs.Ease.getPowInOut(2))
+      .to({alpha: 1, x: menu_credits.x - 1920}, 1250, createjs.Ease.getPowInOut(2))
       .wait(1250);
 
     // Animation for Start Game Button (Enter)

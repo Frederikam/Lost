@@ -17,7 +17,7 @@ module.run = function() {
     const button = new createjs.Shape();
 
     //TODO: Art
-    button.graphics.beginFill('brown').drawRoundRect(canvas.width/2 - 258, 225 + i*150, 512, 94, 5);
+    button.graphics.beginFill('brown').drawRoundRect(canvas.width/2 - 258, 300 + i*150, 512, 94, 5);
     main.ui.addChild(button);
     buttons.push(button);
 
