@@ -127,10 +127,11 @@ function slider() {
 
     function isSolvable() {
         var sum = sumInversions();
-        if(sum % 2 == 1 && sum % 5 == 0 && sum % 10 != 0) {
+        if(sum % 2 == 1 && sum % 5 == 0 && sum % 10 != 0 && (sum == 125 || sum == 145 || sum == 185)) {
             // Check which row the empty box is in
             for(var i=0;i<25;i++) {
-                if(slider_puzzle[i].id == 24 && ((Math.floor(i / 5)) % 2 == 1)) {
+                if(slider_puzzle[i].id == (24+slider_start_piece) && ((Math.floor(i / 5)) % 2 == 1) && (i%5 == 0 || i%5 == 2 || i%5 == 4)) {
+                    console.log("Empty grid: "+i);
                     return true;
                 }
             }
@@ -145,7 +146,7 @@ function slider() {
     // Shuffle puzzle
     shuffle(slider_puzzle);
     // Verify the puzzle is solvable
-    for(var i=0;(i<50);i++) {
+    for(var i=0;(i<1000);i++) {
         if(!isSolvable()) {
             console.log("re-shuffling!");
             shuffle(slider_puzzle);
