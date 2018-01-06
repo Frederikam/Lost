@@ -1,5 +1,7 @@
 export default class Slider {
-	constructor(startPoint, length, orientation, thickness = 2, color = "Gray") {
+	constructor(startPoint, length, orientation, thickness = 2, color = "Blue") {
+		this.orientation = orientation;
+
 		this.displayObject = new createjs.Shape();
 
 		this.displayObject.graphics
