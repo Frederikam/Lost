@@ -17,12 +17,12 @@ module.run = function () {
 	var slidersContainer = new createjs.Container();
 
 	var sliders = [
-		new Slider({x: 706, y:0}, 500, "vertical"),
-		new Slider({x: 776, y:0}, 500, "vertical"),
-		new Slider({x: 846, y:0}, 500, "vertical"),
-		new Slider({x: 706, y:0}, 500, "horizontal"),
-		new Slider({x: 776, y:0}, 500, "horizontal"),
-		new Slider({x: 846, y:0}, 500, "horizontal")
+		new Slider({x: 706, y: 0}, 500, "vertical"),
+		new Slider({x: 776, y: 0}, 500, "vertical"),
+		new Slider({x: 846, y: 0}, 500, "vertical"),
+		new Slider({x: 706, y: 195}, 200, "horizontal"),
+		new Slider({x: 776, y: 265}, 200, "horizontal"),
+		new Slider({x: 846, y: 335}, 200, "horizontal")
 	];
 
 	sliders.forEach(function(slider) {
@@ -37,9 +37,9 @@ module.run = function () {
 			}
 			
 			if(slider.orientation === "horizontal") {
-				if(event.stageX > 100 && event.stageX < 700) {
+				//if(event.stageX > 100 && event.stageX < 700) {
 					event.target.x = event.stageX;
-				}
+				//}
 			}			
 			stage.update();
 		});
