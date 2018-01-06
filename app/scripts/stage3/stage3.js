@@ -24,6 +24,10 @@ module.run = function () {
   mapContainer.regX = imgWidth/2;
   mapContainer.regY = imgWidth/2;
   main.foreground.addChild(mapContainer);
+  main.foreground.alpha = 0;
+  createjs.Tween.get(main.foreground)
+    .wait(2200)
+    .to({alpha: 1}, 2000);
 
   const spriteOrder = [];
   for (let i = 0; i < rows*rows; i++) {spriteOrder.push(i)}
