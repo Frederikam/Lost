@@ -35,9 +35,15 @@ module.run = function () {
       piece.x = x * imgWidth/rows + imgWidth/rows/2;
       piece.y = y * imgWidth/rows + imgWidth/rows/2;
 
-      //piece.rotation = Math.floor(Math.random() * 4) * 90;
+      piece.rotation = Math.floor(Math.random() * 4) * 90;
       mapContainer.addChild(piece);
-      piece.addEventListener("mousedown", onMouseDown);
+      piece.addEventListener("mousedown", function(event) {
+        if (event.nativeEvent.button === 2) {
+          onRightMouseDown(event)
+        } else {
+          onLeftMouseDown(event)
+        }
+      });
       piece.addEventListener("click", onMouseUp);
 
       // Custom parameters
@@ -99,7 +105,7 @@ function tick() {
   }
 }
 
-function onMouseDown(event) {
+function onLeftMouseDown(event) {
   mouseDownEvent = event;
 
   restorePosition(misplacedTile);
@@ -110,6 +116,8 @@ function onMouseDown(event) {
 }
 
 function onMouseUp(event) {
+  if (event.nativeEvent.button !== 0) return;
+
   createjs.Ticker.removeEventListener("tick", tick);
   const pt = mapContainer.globalToLocal(mapContainer.stage.mouseX, mapContainer.stage.mouseY);
   const newTilePos = getNearestPiece(pt.x, pt.y);
@@ -125,6 +133,17 @@ function onMouseUp(event) {
     mouseDownEvent.currentTarget.column = newTilePos.column;
     restorePosition(mouseDownEvent.currentTarget);
   }
+}
+
+let isRotating = false;
+function onRightMouseDown(event) {
+  if (isRotating) return;
+  isRotating = true;
+  createjs.Tween.get(event.currentTarget)
+    .to({rotation: event.currentTarget.rotation + 90}, 200)
+    .call(function() {
+      isRotating = false;
+    })
 }
 
 function restorePosition(piece) {
