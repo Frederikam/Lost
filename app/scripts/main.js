@@ -1,49 +1,46 @@
-//initialize stage in our canvas element
-var stage = new createjs.Stage("game");
+import mainMenu from './ui/mainMenu.js'
+import dialogue from './ui/dialogue.js'
+import preload from './preload.js'
+const module = {};
 
-var tracksContainer = new createjs.Container();
-var redTrack = new createjs.Shape();
-	redTrack.graphics
-	.setStrokeStyle(60)
-	.beginStroke("Red")
-	.moveTo(0,0)
-	.lineTo(300, 30)
-	.lineTo(50, 500)
-	.lineTo(500, 800);
+module.stage = new createjs.Stage("game");
 
-tracksContainer.addChild(redTrack);
-stage.addChild(tracksContainer);
-stage.update();
+// Layers
+module.background = new createjs.Container();
+module.foreground = new createjs.Container();
+module.ui         = new createjs.Container();
+module.dialogue   = new createjs.Container();
 
-//Drag and drop example
-//TODO: Pull out functionality into something that can be applied to whatever shape we desire
-//TODO: Remove updates from event handlers if we move to a tick-based system instead of a reactive one
-var redBall = new createjs.Shape();
-redBall.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 25);
-redBall.x = 20;
-redBall.y = 10;
-stage.addChild(redBall);
-stage.update();
+module.stage.addChild(module.background);
+module.stage.addChild(module.foreground);
+module.stage.addChild(module.ui);
+module.stage.addChild(module.dialogue);
 
-redBall.on("mousedown", function(event) {
-	console.log(`draggable has been picked up at x: ${redBall.x} y: ${redBall.y}`);
-	redBall.graphics.beginFill("Red").drawCircle(0, 0, 20);
-	redBall.held = true;
-	stage.update();
+module.stage.enableMouseOver(20);
+createjs.Ticker.setFPS(60);
+createjs.Ticker.addEventListener("tick", module.stage);
+
+const spinnerContainer = new createjs.Container();
+spinnerContainer.x = 1920/2;
+spinnerContainer.y = 1080/2;
+const spinnerImg = new createjs.Bitmap("assets/images/loading_spinner.png");
+spinnerImg.x = -64;
+spinnerImg.y = -64;
+spinnerImg.width = 128;
+spinnerImg.height = 128;
+module.stage.addChild(spinnerContainer);
+spinnerContainer.addChild(spinnerImg);
+createjs.Tween.get(spinnerContainer, {loop:true})
+  .to({rotation: 360}, 1000);
+
+
+preload.load(function() {
+  createjs.Tween.get(spinnerContainer)
+    .to({alpha: 0}, 500)
+    .call(function() {
+      mainMenu.run(module.stage);
+      dialogue.onLoad();
+    });
 });
 
-redBall.on("pressmove", function(event) {
-	if(redTrack.hitTest(event.stageX, event.stageY) && redBall.held) {
-		event.target.x = event.stageX;
-		event.target.y = event.stageY;		
-	} else {
-		redBall.held = false;
-	}
-	stage.update();
-});
-
-redBall.on("pressup", function(event) {
-	console.log(`draggable has been released at x: ${redBall.x} y: ${redBall.y}`);
-	redBall.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 25);
-	stage.update();
-});
+export default module
