@@ -35,7 +35,7 @@ module.run = function () {
       piece.x = x * imgWidth/rows + imgWidth/rows/2;
       piece.y = y * imgWidth/rows + imgWidth/rows/2;
 
-      piece.rotation = Math.floor(Math.random() * 4) * 90;
+      //piece.rotation = Math.floor(Math.random() * 4) * 90;
       mapContainer.addChild(piece);
       piece.addEventListener("mousedown", onMouseDown);
       piece.addEventListener("click", onMouseUp);
@@ -82,15 +82,9 @@ function tick() {
   // Check if the nearest piece is not the same
   const rowWidth = imgWidth/rows;
   const tile = getNearestPiece(pt.x, pt.y);
-  console.log(tile)
   const fromTile = findPieceByRowAndColumn(tile.row, tile.column);
 
-  // Restore misplaced
-  if (misplacedTile !== null) {
-    misplacedTile.x = misplacedTile.column * rowWidth + imgWidth/rows/2;
-    misplacedTile.y = misplacedTile.row * rowWidth + imgWidth/rows/2;
-    misplacedTile = null;
-  }
+  restorePosition(misplacedTile);
 
   if (mouseDownEvent.currentTarget === null || fromTile == null) return;
 
@@ -99,14 +93,16 @@ function tick() {
     // We are hovering over a new tile!
 
     misplacedTile = fromTile;
-    fromTile.x = mouseDownEvent.currentTarget.row * rowWidth + imgWidth/rows/2;
-    fromTile.y = mouseDownEvent.currentTarget.column * rowWidth + imgWidth/rows/2;
+    fromTile.x = mouseDownEvent.currentTarget.column * rowWidth + imgWidth/rows/2;
+    fromTile.y = mouseDownEvent.currentTarget.row * rowWidth + imgWidth/rows/2;
     console.log(fromTile.x+":"+fromTile.y);
   }
 }
 
 function onMouseDown(event) {
   mouseDownEvent = event;
+
+  restorePosition(misplacedTile);
 
   // Render on top
   mapContainer.setChildIndex(mouseDownEvent.currentTarget, mapContainer.getNumChildren()-1);
@@ -115,6 +111,29 @@ function onMouseDown(event) {
 
 function onMouseUp(event) {
   createjs.Ticker.removeEventListener("tick", tick);
+  const pt = mapContainer.globalToLocal(mapContainer.stage.mouseX, mapContainer.stage.mouseY);
+  const newTilePos = getNearestPiece(pt.x, pt.y);
+  const otherPiece = findPieceByRowAndColumn(newTilePos.row, newTilePos.column);
+
+  if (otherPiece === null) {
+    restorePosition(mouseDownEvent.currentTarget);
+  } else {
+    otherPiece.row = mouseDownEvent.currentTarget.row;
+    otherPiece.column = mouseDownEvent.currentTarget.column;
+    restorePosition(otherPiece);
+    mouseDownEvent.currentTarget.row = newTilePos.row;
+    mouseDownEvent.currentTarget.column = newTilePos.column;
+    restorePosition(mouseDownEvent.currentTarget);
+  }
+}
+
+function restorePosition(piece) {
+  // Restore misplaced
+  const rowWidth = imgWidth/rows;
+  if (piece !== null) {
+    piece.x = piece.column * rowWidth + imgWidth/rows/2;
+    piece.y = piece.row * rowWidth + imgWidth/rows/2;
+  }
 }
 
 // Copy paste driven development
