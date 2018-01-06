@@ -53,10 +53,10 @@ module.run = function () {
 // Local coordinates
 function getNearestPiece(x, y) {
   const rowWidth = imgWidth/rows;
-  let row = Math.floor(x / rowWidth);
-  let column = Math.floor(y / rowWidth);
-  row = Math.max(0, Math.min(rows, row));
+  let column = Math.floor(x / rowWidth);
+  let row = Math.floor(y / rowWidth);
   column = Math.max(0, Math.min(rows, column));
+  row = Math.max(0, Math.min(rows, row));
   return {row: row, column: column}
 }
 
@@ -82,6 +82,7 @@ function tick() {
   // Check if the nearest piece is not the same
   const rowWidth = imgWidth/rows;
   const tile = getNearestPiece(pt.x, pt.y);
+  console.log(tile)
   const fromTile = findPieceByRowAndColumn(tile.row, tile.column);
 
   // Restore misplaced
