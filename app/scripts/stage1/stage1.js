@@ -316,14 +316,36 @@ function onComplete() {
   ended = true;
   console.log("Completed!");
 
-  // TODO: Dialogue
-
   createjs.Tween.get(mapContainer)
     .to({y: mapContainer.y + 50, alpha: 0}, 1000)
     .call(function() {
       main.foreground.removeChild(mapContainer);
-    })
+    });
 
+  dialogue.actorRight.speak('Reisen: "It looks like you won… (And I’ll get Tewi later for this!!)"');
+
+  const timeline = [
+    () => {
+      dialogue.actorLeft.speak('Sumireko: "Now please show me the exit."');
+    }, () => {
+      dialogue.setText('[Sumireko then finds her way out with Reisen\'s help.]');
+    }, () => {
+      dialogue.actorRight.setVisible(false, 500);
+      dialogue.setText('[The journal started glowing inside, and Sumireko opened it, curious at whatever was happening.]');
+    },() => {
+      dialogue.actorLeft.speak('Sumireko: "A page was restored!"');
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "If I fill the missing pages, will you bring me back home?"');
+    }, () => {
+      dialogue.setText('[The journal started glowing again as if to nod.]');
+    }, () => {
+      dialogue.setVisible(false);
+      // TODO: Go to next stage
+    }
+  ];
+
+  dialogue.setTimeline(timeline);
+  dialogue.setAutoStep(true);
 }
 
 export default module;
