@@ -11,7 +11,7 @@ const manifestRaw = [
   "assets/images/slider/board.png",
   "assets/images/slider/full.png",
   "assets/images/stage1/background1.jpg",
-  "assets/images/stage1/map.png",
+  "assets/images/stage1/map.jpg",
   "assets/audio/menu.ogg",
   "assets/audio/puzzle.ogg",
   "assets/images/stage1/prologue.jpg"
