@@ -1,30 +1,33 @@
-import main from '../main.js'
-import dialogue from "../ui/dialogue";
+import main from "../main.js"
+import dialogue from '../ui/dialogue.js'
+import audio from "../audio";
+import stage3 from "../stage3/stage3.js"
 
 const module = {};
 
-// Variables
-var cm_past_guess_container = new Array(3);
-for(var i=0;i<4;i++) {
-  cm_past_guess_container[i] = new Array(4);
-}
+var slider_start_piece; // Keeps the id of the starting slider puzzle piece
+var slider_puzzle = []; // Holds all sprite data for puzzle pieces
+var slider_list = []; // Current position of all puzzle pieces
+var empty; // Holds the position of the blank space
+var piece_center = 90;
+var piece_startx = 600;
+var piece_starty = 180;
+var slider_solved; // Prevents further interaction with puzzle and starts end sequence
 
-var cm_piece = []; // Stores values for pieces
-var cm_past_guess = [[7,7,7,7],[7,7,7,7],[7,7,7,7]]; // Stores values for past guesses
-var cm_past_correct  = [[11,11,11,11],[11,11,11,11],[11,11,11,11]]; // Stores past correct/incorrect numbers
-var cm_spaces = []; // Empty space for player to place pieces for puzzle
-var cm_space_id = []; // Stores IDs for player-interactive spaces
-var clicked_last; // Stores id of the last clicked item
-var cm_thumb_id = []; // Stores IDs of color thumbnails
-var cm_answer = []; // Stores ran generated answer for player to guess
-var cm_guess = [7,7,7,7]; // Stores player guess
-var cm_pixel;
+module.background = "assets/images/menu_bg.jpg";
 
-// Selection pieces
-var red, yellow, green, blue, purple, white;
-var cm_image = []; // Stores bitmaps for main color piece placement in blank spaces
+let background;
 
-module.run = function () {
+let sliderContainer = new createjs.Container();
+
+// Menu assets
+var slider_bg =       new createjs.Bitmap("assets/images/menu_bg.jpg");
+var slider_board =    new createjs.Bitmap("assets/images/slider/board.png");
+var slider_congrats = new createjs.Bitmap("assets/images/slider/congrats.png");
+
+let ended = false;
+
+module.run = function() {
   /* Dialogue */
   dialogue.actorLeft.setFrame(dialogue.sumireko);
   dialogue.actorLeft.setActive(false, 500);
@@ -95,369 +98,418 @@ module.run = function () {
 };
 
 module.begin = function() {
+  var data = {
+    images: ["assets/images/stage2/nue_puzzle.png"],
+    frames: {width:180, height: 180, regX: 90, regY: 90},
+    animations: {
+      "0": 0,
+      "1": 1,
+      "2": 2,
+      "3": 3,
+      "4": 4,
+      "5": 5,
+      "6": 6,
+      "7": 7,
+      "8": 8,
+      "9": 9,
+      "10": 10,
+      "11": 11,
+      "12": 12,
+      "13": 13,
+      "14": 14,
+      "15": 15,
+      "16": 16,
+      "17": 17,
+      "18": 18,
+      "19": 19,
+      "20": 20,
+      "21": 21,
+      "22": 22,
+      "23": 23,
+      "24": 24
+    }
+  };
+  var spritesheet = new createjs.SpriteSheet(data);
 
-  // Menu assets
-  var menu_bg = new createjs.Bitmap("assets/images/menu_bg.jpg");
-  
-      // Puzzle assets
-      cm_piece.push(""); // 0
-      cm_piece.push("assets/images/colormatch/red.png"); // 1
-      cm_piece.push("assets/images/colormatch/yellow.png"); // 2
-      cm_piece.push("assets/images/colormatch/green.png"); // 3
-      cm_piece.push("assets/images/colormatch/blue.png"); // 4
-      cm_piece.push("assets/images/colormatch/purple.png"); // 5
-      cm_piece.push("assets/images/colormatch/white.png"); // 6
-  
-      cm_piece.push("assets/images/colormatch/correct.png"); // 7
-      cm_piece.push("assets/images/colormatch/incorrect.png"); // 8
-      cm_piece.push("assets/images/colormatch/correct_icon.png"); // 9
-      cm_piece.push("assets/images/colormatch/incorrect_icon.png"); // 10
-      cm_piece.push("assets/images/colormatch/space.png"); // 11
-      cm_piece.push("assets/images/colormatch/pixel.png"); // 12?
-  
-      // Container coordinates
-  
-      // Add assets to stage
-      stage.addChild(menu_bg);
-      
-      // Populate past guess table
-      // Rows for past guesses
-      for(var i=0;i<3;i++) {
-          var startx = 600;
-          var starty = 50;
-          // Columns for past guesses
-          for(var j=0;j<4;j++) {
-              cm_past_guess_container[i][j] = new createjs.Bitmap(cm_piece[0]);
-              cm_past_guess_container[i][j].x = (startx+(i*150));
-              cm_past_guess_container[i][j].y = (starty+(j*130));
-              // Alpha
-              cm_past_guess_container[i][j].alpha = ((j+2)/5); // Gradually fade the earliest given answer out
-              cm_past_guess_container[i][j].width = 20;
-              cm_past_guess_container[i][j].height = 20;
-              //cm_past_guess[i][j] = 0;
-              stage.addChild(cm_past_guess_container[i][j]);
-          }
-      }
-  
-      // Populate past results table
-      // Rows for past results
-      for(var i=0;i<4;i++) {
-          var startx = 1180;
-          var starty = 70;
-          // Columns for past guesses
-          for(var j=0;j<3;j++) {
-              cm_past_guess_container[i][j] = new createjs.Bitmap(cm_piece[9]);
-              if(i<2) {
-                  cm_past_guess_container[i][j].x = (startx+(i*25));
-                  cm_past_guess_container[i][j].y = (starty+(j*130));
-              }
-              else {
-                  cm_past_guess_container[i][j].x = (startx+((i-2)*25));
-                  cm_past_guess_container[i][j].y = (starty+30+(j*130));
-              }
-              // Alpha
-              cm_past_guess_container[i][j].alpha = ((j+2)/5);
-              cm_past_guess_container[i][j].width = 20;
-              cm_past_guess_container[i][j].height = 20;
-              //cm_past_guess[i][j] = 0;
-              stage.addChild(cm_past_guess_container[i][j]);
-          }
-      }
-  
-      // Draw empty circles for piece placement
-      for(var i=0;i<4;i++) {
-          var startx = 550;
-          var starty = 550;
-  
-          cm_spaces[i] = new createjs.Bitmap(cm_piece[11]);
-          cm_spaces[i].x = (startx + (200*i));
-          cm_spaces[i].y = starty;
-  
-          stage.addChild(cm_spaces[i]);
-  
-          cm_spaces[i].addEventListener("click", handleMouseEvent);
-  
-          cm_space_id.push(cm_spaces[i].id);
-          //console.log(cm_space_id[i]);
-  
-          // Generate sequence of colors to guess
-          function getRandomInt(min, max) {
-              return Math.floor(Math.random() * (max - min + 1)) + min;
-          }
-  
-          cm_answer.push(getRandomInt(0,5));
-          console.log(cm_answer[i]);
-      }
-  
-      // Draw selection pieces (invisible)
-      // Red - 
-      red = new createjs.Shape();
-      red.graphics.beginFill("red").drawCircle(0,0,20);
-      red.alpha = 0;
-      stage.addChild(red);
-      cm_thumb_id[0] = red.id;
-      red.addEventListener("click", handleMouseEvent);
-      // Yellow - 2
-      yellow = new createjs.Shape();
-      yellow.graphics.beginFill("yellow").drawCircle(0,0,20);
-      yellow.alpha = 0;
-      stage.addChild(yellow);
-      cm_thumb_id[1] = yellow.id;
-      yellow.addEventListener("click", handleMouseEvent);
-      // Green - 3
-      green = new createjs.Shape();
-      green.graphics.beginFill("green").drawCircle(0,0,20);
-      green.alpha = 0;
-      stage.addChild(green);
-      cm_thumb_id[2] = green.id;
-      green.addEventListener("click", handleMouseEvent);
-      // Blue - 4
-      blue = new createjs.Shape();
-      blue.graphics.beginFill("blue").drawCircle(0,0,20);
-      blue.alpha = 0;
-      stage.addChild(blue);
-      cm_thumb_id[3] = blue.id;
-      blue.addEventListener("click", handleMouseEvent);
-      // Purple - 5
-      purple = new createjs.Shape();
-      purple.graphics.beginFill("purple").drawCircle(0,0,20);
-      purple.alpha = 0;
-      stage.addChild(purple);
-      cm_thumb_id[4] = purple.id;
-      purple.addEventListener("click", handleMouseEvent);
-      // White - 6
-      white = new createjs.Shape();
-      white.graphics.beginFill("white").drawCircle(0,0,20);
-      white.alpha = 0;
-      stage.addChild(white);
-      cm_thumb_id[5] = white.id;
-      white.addEventListener("click", handleMouseEvent);
-  
-      // Populate images for pieces
-      cm_image.push(new createjs.Bitmap(cm_piece[1]));
-      cm_image.push(new createjs.Bitmap(cm_piece[2]));
-      cm_image.push(new createjs.Bitmap(cm_piece[3]));
-      cm_image.push(new createjs.Bitmap(cm_piece[4]));
-      cm_image.push(new createjs.Bitmap(cm_piece[5]));
-      cm_image.push(new createjs.Bitmap(cm_piece[6]));
-      cm_image.push(new createjs.Bitmap(cm_piece[7]));
-      cm_image.push(new createjs.Bitmap(cm_piece[8]));
-      cm_image.push(new createjs.Bitmap(cm_piece[9]));
-      cm_image.push(new createjs.Bitmap(cm_piece[10]));
-      cm_image.push(new createjs.Bitmap(cm_piece[11]));
-      cm_image.push(new createjs.Bitmap(cm_piece[12])); // 11, Pixel
+  // Asset coordinates
+  slider_board.x = 960;
+  slider_board.y = 540;
+  slider_board.regX = 525;
+  slider_board.regY = 525;
+
+  // Hide congrats message
+  slider_congrats.alpha = 0;
+  slider_congrats.scaleX = .5;
+  slider_congrats.scaleY = .5;
+  slider_congrats.x = 960;
+  slider_congrats.y = 540;
+  slider_congrats.regX = 250;
+  slider_congrats.regY = 45;
+
+  /*
+  menu_title.x = 960;
+  menu_title.y = 280;
+  menu_title.regX = 520;
+  menu_title.alpha = 0;
+  menu_title.scaleX = .5;
+  menu_title.scaleY = .5;
+  */
+
+  // Add assets to stage
+  sliderContainer.addChild(slider_bg);
+  sliderContainer.addChild(slider_board);
+  sliderContainer.addChild(slider_congrats);
+
+  sliderContainer.alpha = 0;
+  main.foreground.addChild(sliderContainer);
+  createjs.Tween.get(sliderContainer)
+    .to({alpha: 1}, 1000);
+
+  // Define initial placement of puzzle pieces
+  for(var i=0;i<25;i++) {
+    slider_puzzle.push(new createjs.Sprite(spritesheet, i));
+    if(i==0) {
+      // Get starting id for puzzle pieces
+      slider_start_piece = slider_puzzle[i].id;
+    }
+    // Check for last piece, turn alpha to 0
+    if(i==24) {
+      slider_puzzle[i].alpha = 0;
+    }
+  }
+
+  const tileCount = 25;
+
+  // Shuffle puzzle
+  shuffle(slider_puzzle);
+  // Verify the puzzle is solvable
+  for(let i=0;(i<1000);i++) {
+    if(!isSolvable()) {
+      console.log("re-shuffling!");
+      shuffle(slider_puzzle);
+    }
+    else {
+      break;
+    }
+  }
+
+  // Add pieces to board
+  for(let i=0;i<25;i++) {
+    const col = i % 5;
+    const row = Math.floor(i / 5);
+
+    // Find blank space position
+    if(slider_puzzle[i] == 24) {
+      emptyspace = i;
+    }
+
+    slider_puzzle[i].x = (piece_startx + ((piece_center*2)*col));
+    slider_puzzle[i].y = (piece_starty + ((piece_center*2)*row));
+
+    sliderContainer.addChild(slider_puzzle[i]);
+    slider_puzzle[i].stop(); // Prevent animation for each piece
+
+    // Define mouse interactions for pieces
+    slider_puzzle[i].addEventListener("click", handleMouseEvent);
+
+    // Populate starting list of slider puzzle pieces after shuffle
+    slider_list.push(slider_puzzle[i].id);
+  }
+
+  //onComplete(); // For testing
 };
 
+function onComplete() {
+  //if (ended) return; // Debounce
+  //ended = true;
+  console.log("Completed!");
+
+  createjs.Tween.get(sliderContainer)
+    .to({y: sliderContainer.y + 50, alpha: 0}, 1000)
+    .call(function() {
+      main.foreground.removeChild(sliderContainer);
+    });
+
+  setTimeout(() => {
+    dialogue.actorLeft.setFrame(dialogue.sumireko);
+    dialogue.actorRight.setFrame(dialogue.nue);
+    dialogue.setVisible(true);
+    dialogue.actorRight.speak('Nue: "No way! I lost my own game!"');
+
+    dialogue.setVisible(true);
+
+    const timeline = [
+      () => {
+        dialogue.actorLeft.speak('Sumireko: "I’m tired now and I wanna go home… No more fighting with Gensōkyō weirdos for today!"');
+      }, () => {
+        dialogue.setText("[A familiar voice came from outside the shrine.]");
+        dialogue.actorLeft.setVisible(false, 300)
+      }, () => {
+        dialogue.setText("Who’s there?! Shinmyoumaru?! Are you inside?!");
+      }, () => {
+        dialogue.actorLeft.speak('Sumireko: "Oh crap! It’s that angry maiden from before! I gotta hide quickly and…!"');
+      }, () => {
+        dialogue.setText("[Sumireko felt a hand on her shoulder.]");
+      }, () => {
+        dialogue.actorRight.setFrame(dialogue.reimu);
+        dialogue.actorRight.speak('Reimu: "You gotta do what?"');
+      }, () => {
+        dialogue.setText("[Sumireko was fast to lay down and bow before the angry shrine maiden.]");
+      }, () => {
+        dialogue.actorLeft.speak('Sumireko: "Sorry for the trouble! I just want to go home!"');
+      }, () => {
+        dialogue.actorRight.speak('Reimu: "Why do you have all these spell cards with you? You better start speaking…"');
+      }, () => {
+        dialogue.actorLeft.speak('Sumireko: "I-I…"');
+      }, () => {
+        dialogue.actorLeft.setVisible(false, 300);
+        setTimeout(() => {
+          dialogue.actorLeft.setFrame(dialogue.shinmyoumaruMirrored);
+          dialogue.actorLeft.setVisible(true, 300);
+          dialogue.actorLeft.speak('Shinmyoumaru: "Wait Reimu! I can explain that!"');
+        }, 350);
+      }, () => {
+        dialogue.setText("[Reimu listened while the inchling explained what happened. Reimu sighed.]");
+      }, () => {
+        dialogue.actorRight.speak('Reimu: "I don’t know how the Akyuu’s Spell Card Register ended up in the Human World, but we’ll more careful now!"');
+      }, () => {
+        dialogue.actorRight.speak('Reimu: "As for you, Sumireko, I’ll be sending you home soon."');
+      }, () => {
+        dialogue.actorLeft.setVisible(false, 300);
+        setTimeout(() => {
+          dialogue.actorLeft.setFrame(dialogue.sumireko);
+          dialogue.actorLeft.setVisible(true, 300);
+          dialogue.actorLeft.speak('Sumireko: "Can I come back to Gensōkyō another day?"');
+        }, 350);
+      }, () => {
+        dialogue.actorRight.speak('Reimu: "Unfortunately not. We still don’t know how it was possible for you to come here in the first place."');
+      }, () => {
+        dialogue.actorRight.speak('Reimu: "I’m sorry, but we must check the barrier and make sure no outsiders get into Gensōkyō."');
+      }, () => {
+        dialogue.setText("[Sumireko sighed. Even though she knew what the answer would be, she had a small spark of hope inside.]");
+      }, () => {
+        dialogue.setText("[The girls went outside the shrine and Reimu cast a spell to open a portal.]");
+      }, () => {
+        dialogue.actorRight.setVisible(false, 500);
+        dialogue.setText("[Sumireko got into the portal and in a blink she was back to the shrine where her adventure had started.]");
+        createjs.Tween.get(main.background)
+          .to({alpha: 0}, 1000)
+          .call(() => {
+            main.background.removeAllChildren();
+            main.background.alpha = 1;
+            const background = new createjs.Bitmap("assets/images/stage1/prologue.jpg");
+            background.alpha = 0;
+            main.background.addChild(background);
+            createjs.Tween.get(background)
+              .to({alpha: 1}, 1000);
+          })
+      }, () => {
+        dialogue.actorLeft.speak('Sumireko: "It was a cool adventure, and even with all that trouble I got into, I want to go back someday… To Gensōkyō"');
+      }, () => {
+        dialogue.setText("The end");
+        dialogue.actorLeft.setVisible(false, 500);
+        dialogue.setAutoStep(false);
+      }
+    ];
+
+    dialogue.setTimeline(timeline);
+    dialogue.setAutoStep(true);
+  }, 2000);
+}
+
+
+// Shuffle pieces for puzzle
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function sumInversions() {
+  var inversions = 0;
+  // Loop for each number
+  for(var i=0;i<25;i++) {
+    // Loop for each comparison
+    for(var j=(i+1);j<25;j++) {
+      // Is the target number smaller than itself?
+      if(slider_puzzle[i].id > slider_puzzle[j].id) {
+        inversions++;
+      }
+    }
+  }
+  console.log(inversions);
+  return inversions;
+}
+
+function isSolvable() {
+  var sum = sumInversions();
+  if(sum % 2 == 1 && sum % 5 == 0 && sum % 10 != 0 && (sum == 125 || sum == 145 || sum == 185)) {
+    // Check which row the empty box is in
+    for(var i=0;i<25;i++) {
+      if(slider_puzzle[i].id == (24+slider_start_piece) && ((Math.floor(i / 5)) % 2 == 1) && (i%5 == 0 || i%5 == 2 || i%5 == 4)) {
+        console.log("Empty grid: "+i);
+        return true;
+      }
+    }
+    return false;
+  }
+  else {
+    return false;
+  }
+
+}
 
 function handleMouseEvent(event) {
-  // Detect which space was clicked
-  var clicked = event.target.id;
-  console.log(clicked);
+  if(slider_solved != 1) {
+    // Initialize variables
+    var clicked_grid, clicked_id, empty_grid, empty_id, clicked_key, empty_key;
 
-  // Find out if a clear space button was clicked
-  for(var i=0;i<4;i++) {
-      if(cm_space_id[i] == event.target.id) {
-          // Check if displayed
-          if(red.alpha == 0 || clicked_last != clicked) {
-              // Display color selector
-              // Get position of clicked button
-              var clickedx = (cm_spaces[i].x+60);
-              var clickedy = (cm_spaces[i].y+60);
-              // Red - 1
-              red.x = (clickedx + 0);
-              red.y = (clickedy - 80);
-              red.alpha = 1;
-              // Yellow - 2
-              yellow.x = (clickedx + 70);
-              yellow.y = (clickedy - 40);
-              yellow.alpha = 1;
-              // Green - 3
-              green.x = (clickedx + 70);
-              green.y = (clickedy + 40);
-              green.alpha = 1;
-              // Blue - 4
-              blue.x = (clickedx + 0);
-              blue.y = (clickedy + 80);
-              blue.alpha = 1;
-              // Purple - 5
-              purple.x = (clickedx - 70);
-              purple.y = (clickedy + 40);
-              purple.alpha = 1;
-              // White - 6
-              white.x = (clickedx - 70);
-              white.y = (clickedy - 40);
-              white.alpha = 1;
-          }
-          else if(clicked_last == clicked) {
-              // Hide from display
-              red.alpha = 0;
-              yellow.alpha = 0;
-              green.alpha = 0;
-              blue.alpha = 0;
-              purple.alpha = 0;
-              white.alpha = 0;
-          }
+    // What was selected?
+    // slider_list[grid] = id;
+    for(var i=0;i<25;i++) {
+      if(slider_list[i] == event.target.id) {
+        clicked_grid = i;
+        clicked_id = event.target.id;
+        break;
       }
-  }
+    }
 
-  // Find out if a thumbnail was clicked
-  for(var i=0;i<6;i++) {
-      if(cm_thumb_id[i] == event.target.id) {
-          // i cooresponds to color
-          // i = 0 = red / cm_piece[1] = red (add 1 to i)
-          var colornum = i;
-          
-          for(var j=0;j<4;j++) {
-              if(cm_space_id[j] == clicked_last) {
-                  // Store selected color in last clicked space
-                  //console.log(cm_spaces[j].image);
-                  cm_spaces[j].image = cm_image[colornum].image;
-                  //console.log(cm_spaces[j].image);
-                  // Remove thumbnails from view
-                  red.alpha = 0;
-                  yellow.alpha = 0;
-                  green.alpha = 0;
-                  blue.alpha = 0;
-                  purple.alpha = 0;
-                  white.alpha = 0;
-
-                  // Store player guess
-                  cm_guess[j] = colornum;
-                  console.log("Guess: "+cm_guess[j]);
-
-
-                  // Check if all spaces are filled with a color
-                  var spaceimgstr = '<img src="'+cm_piece[11]+'">';
-                  //console.log("var: "+spaceimgstr);
-                  if(cm_guess[0] != 7 && cm_guess[1] != 7 && cm_guess[2] != 7 && cm_guess[3] != 7) {
-                      console.log("GUESS: "+cm_guess[0]+", "+cm_guess[1]+", "+cm_guess[2]+", "+cm_guess[3]);
-                      console.log("ANSWER: "+cm_answer[0]+", "+cm_answer[1]+", "+cm_answer[2]+", "+cm_answer[3]);
-                      // Compare logic
-                      var correct = 1;
-                      for(var k=0;k<4;k++) {
-                          if(cm_answer[k] == cm_guess[k]) {
-                              // Correct, move on
-                              //console.log("CORRECT Answer comparison"+cm_answer[k]+", "+cm_guess[k]);
-                          }
-                          else {
-                              correct = 0; // incorrect answer found
-                              //console.log("INCORRECT Answer comparison"+cm_answer[k]+", "+cm_guess[k]);
-                              //console.log("incorrect");
-                              break;
-                          }
-                      }
-                      // Check if correct is still true
-                      if(correct == 1) {
-                          // WIN
-                          console.log("WIN");
-                      }
-                      else {
-                          // Determine correct / incorrect
-                          var cm_correct = 0;
-                          var cm_incorrect = 0;
-                          var cm_corr = [];
-                          // Get number count
-                          for(var k=0;k<4;k++) {
-                              // Compare against cm_guess[k]
-                              // Only compare at or ahead of k, prevents counting duplicates
-                              for(var l=k;l<6;l++) {
-                                  // l is color
-                                  if(cm_guess[k] == cm_answer[l]) {
-                                      // If k and l match, it is CORRECT
-                                      if(k == l) {
-                                          cm_correct = cm_correct + 1;
-                                      }
-                                      // If k and l do not match, it is INCORRECT
-                                      else {
-                                          cm_incorrect = cm_incorrect + 1;
-                                      }
-                                  }
-                              }
-                          }
-                          // Set correct/incorrect array
-                          for(var k=0;k<cm_correct;k++) {
-                              // Add correct to array
-                              cm_corr.push(1);
-                          }
-                          for(var k=0;k<cm_incorrect;k++) {
-                              // Add correct to array
-                              cm_corr.push(2);
-                          }
-
-                          // Shift past guesses/corrects
-                          // ROW
-                          for(var k=0;k<2;k++) {
-                              // COLUMNS
-                              for(var l=0;l<4;l++) {
-                                  cm_past_guess[k][l] = cm_past_guess[(k+1)][l];
-                                  cm_past_correct[k][l] = cm_past_correct[(k+1)][l];
-                                  // Set images
-                                  var img_num = cm_past_guess[k][l];
-                                  cm_past_guess_container[l][k].image = cm_image[img_num].image;
-                                  var img_num2 = cm_past_correct[k][l];
-                                  if(img_num2 == 0) {
-                                      // Blank
-                                      var img_use = 11;
-                                  }
-                                  else if(img_num2 == 1) {
-                                      // Correct
-                                      var img_use = 8;
-                                  }
-                                  else {
-                                      // Incorrect
-                                      var img_use = 9;
-                                  }
-                                  //console.log("Attempting to set cm_past_guess_container["+k+"]["+l+"] as "+cm_image[img_use].image+"(cm_image["+img_use+"].image])");
-                                  cm_past_guess_container[k][l].image = cm_image[img_use].image;
-                                  console.log("storing "+cm_past_guess[k][l]+" in row "+k+", col "+l);
-                              }
-                          }
-                          // Move current guess/correct to past_[2]
-                          for(var k=0;k<4;k++) {
-                              cm_past_guess[2][k] = cm_guess[k];
-                              //console.log("These should be equal: "+cm_past_guess[2][k]+" & ");
-                              cm_past_correct[2][k] = cm_past_correct[k];
-                              // Set images
-                              var img_num = cm_past_guess[2][k];
-                              cm_past_guess_container[k].image = cm_image[img_num].image;
-                              var img_num2 = cm_past_correct[2][k];
-                              if(img_num2 == 0) {
-                                  // Blank
-                                  var img_use = 11;
-                              }
-                              else if(img_num2 == 1) {
-                                  // Correct
-                                  var img_use = 8;
-                              }
-                              else {
-                                  // Incorrect
-                                  var img_use = 9;
-                              }
-                              cm_past_guess_container[2][k].image = cm_image[img_use].image;
-                          }
-                          // Clear current guess
-                          cm_guess = [7,7,7,7];
-                          // Set images
-                          cm_spaces[0].image = cm_image[10].image;
-                          cm_spaces[1].image = cm_image[10].image;
-                          cm_spaces[2].image = cm_image[10].image;
-                          cm_spaces[3].image = cm_image[10].image;
-                      }
-
-                  }
-                  else {
-                      console.log("spaces still exist");
-                      //console.log(cm_guess[0]+", "+cm_guess[1]+", "+cm_guess[2]+", "+cm_guess[3]);
-                  }
-              }
-          }
+    // Where is slider_list[?] = 24? (24 + slider_start_piece)
+    for(var i=0;i<25;i++) {
+      if(slider_list[i] == (24 + slider_start_piece)) {
+        empty_grid = i;
+        empty_id = (24 + slider_start_piece);
+        break;
       }
+    }
+
+    // What is the equivalent key for the matching clicked slider id?
+    for(var i=0;i<25;i++) {
+      if(slider_puzzle[i].id == slider_list[clicked_grid]) {
+        clicked_key = i;
+        break;
+      }
+    }
+
+    // What is the equivalent key for the matching empty slider id?
+    for(var i=0;i<25;i++) {
+      if(slider_puzzle[i].id == slider_list[empty_grid]) {
+        empty_key = i;
+        break;
+      }
+    }
+
+    // Where are they in relation to each other?
+    // Move Up
+    if((clicked_grid - 5) == empty_grid) {
+      // Animate
+      // Move clicked to empty position
+      createjs.Tween.get(slider_puzzle[clicked_key], { loop: false })
+        .to({y: (piece_starty+(180*(Math.floor(empty_grid/5))))}, 250, createjs.Ease.getPowInOut(2));
+      // Move empty to clicked position
+      createjs.Tween.get(slider_puzzle[empty_key], { loop: false })
+        .to({y: (piece_starty+(180*(Math.ceil((empty_grid)/5))))}, 250, createjs.Ease.getPowInOut(2));
+      // Store new values
+      var old_clicked_id = slider_list[clicked_grid];
+      var old_empty_id = slider_list[empty_grid];
+      slider_list[clicked_grid] = old_empty_id;
+      slider_list[empty_grid] = old_clicked_id;
+    }
+    // Move Down
+    else if((clicked_grid + 5) == empty_grid) {
+      // Animate
+      // Move clicked to empty position
+      createjs.Tween.get(slider_puzzle[clicked_key], { loop: false })
+        .to({y: ((piece_starty*2)+(180*(Math.floor(clicked_grid/5))))}, 250, createjs.Ease.getPowInOut(2));
+      // Move empty to clicked position
+      createjs.Tween.get(slider_puzzle[empty_key], { loop: false })
+        .to({y: ((piece_starty*(Math.floor(empty_grid/5))))}, 250, createjs.Ease.getPowInOut(2));
+      // Store new values
+      var old_clicked_id = slider_list[clicked_grid];
+      var old_empty_id = slider_list[empty_grid];
+      slider_list[clicked_grid] = old_empty_id;
+      slider_list[empty_grid] = old_clicked_id;
+    }
+    // Move Left
+    else if((clicked_grid - 1) == empty_grid && (clicked_grid % 5) != 0) {
+      // Animate
+      // Move clicked to empty position
+      createjs.Tween.get(slider_puzzle[clicked_key], { loop: false })
+        .to({x: (piece_startx+(180*(empty_grid % 5)))}, 250, createjs.Ease.getPowInOut(2));
+      // Move empty to clicked position
+      createjs.Tween.get(slider_puzzle[empty_key], { loop: false })
+        .to({x: (piece_startx+(180*(clicked_grid % 5)))}, 250, createjs.Ease.getPowInOut(2));
+      // Store new values
+      var old_clicked_id = slider_list[clicked_grid];
+      var old_empty_id = slider_list[empty_grid];
+      slider_list[clicked_grid] = old_empty_id;
+      slider_list[empty_grid] = old_clicked_id;
+    }
+    // Move Right
+    else if((clicked_grid + 1) == empty_grid && (empty_grid % 5) != 0) {
+      // Animate
+      // Move clicked to empty position
+      createjs.Tween.get(slider_puzzle[clicked_key], { loop: false })
+        .to({x: (piece_startx+(180*(empty_grid % 5)))}, 250, createjs.Ease.getPowInOut(2));
+      // Move empty to clicked position
+      createjs.Tween.get(slider_puzzle[empty_key], { loop: false })
+        .to({x: (piece_startx+(180*(clicked_grid % 5)))}, 250, createjs.Ease.getPowInOut(2));
+      // Store new values
+      var old_clicked_id = slider_list[clicked_grid];
+      var old_empty_id = slider_list[empty_grid];
+      slider_list[clicked_grid] = old_empty_id;
+      slider_list[empty_grid] = old_clicked_id;
+    }
+    else {
+      // Invalid move
+      //console.log("Empty Grid: "+empty_grid+", ID: "+empty_id+" | Clicked Grid: "+clicked_grid+", ID: "+clicked_id+"; invalid move");
+    }
+    console.log(slider_list[0]+"-"+slider_list[1]+"-"+slider_list[2]+"-"+slider_list[3]+"-"+slider_list[4]);
+    console.log(slider_list[5]+"-"+slider_list[6]+"-"+slider_list[7]+"-"+slider_list[8]+"-"+slider_list[9]);
+    console.log(slider_list[10]+"-"+slider_list[11]+"-"+slider_list[12]+"-"+slider_list[13]+"-"+slider_list[14]);
+    console.log(slider_list[15]+"-"+slider_list[16]+"-"+slider_list[17]+"-"+slider_list[18]+"-"+slider_list[19]);
+    console.log(slider_list[20]+"-"+slider_list[21]+"-"+slider_list[22]+"-"+slider_list[23]+"-"+slider_list[24]);
+    console.log("---");
+
+
+    // Check if the puzzle is solved
+    var puzzle_incorrect = 0;
+    for(var i=0;i<24;i++) {
+      if(slider_list[i] < slider_list[(i+1)]) {
+        // Good, keep looping
+      }
+      else {
+        // Incorrect entry found
+        puzzle_incorrect = 1;
+        break;
+      }
+    }
+    if(puzzle_incorrect === 0) {
+      // Disable interaction
+      slider_solved = 1;
+      // Show last piece to complete puzzle
+      // Fade out all puzzle elements
+      for(var i=0;i<25;i++) {
+        createjs.Tween.get(slider_puzzle[i], { loop: false })
+          .to({alpha: 1}, 2000, createjs.Ease.getPowInOut(2))
+          .wait(3000)
+          .to({alpha: 0}, 500, createjs.Ease.getPowInOut(2));
+      }
+      createjs.Tween.get(slider_board, { loop: false })
+        .wait(5000)
+        .to({alpha: 0}, 500, createjs.Ease.getPowInOut(2));
+      // Congratulations message
+      createjs.Tween.get(slider_congrats, { loop: false })
+        .wait(5250)
+        .to({scaleX: 1, scaleY: 1, alpha: 1}, 750, createjs.Ease.getPowInOut(2))
+        .wait(2000)
+        .to({x: -1000, alpha: 0}, 1500, createjs.Ease.getPowInOut(2));
+
+      onComplete();
+    }
   }
-
-  
-  // Store last clicked
-  clicked_last = clicked;
-
 }
 
 export default module;
