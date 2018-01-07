@@ -1,4 +1,6 @@
 import main from "../main.js"
+import dialogue from '../ui/dialogue.js'
+import audio from "../audio";
 
 const module = {};
 
@@ -20,6 +22,52 @@ var slider_congrats = new createjs.Bitmap("assets/images/slider/congrats.png");
 
 
 module.run = function() {
+  /* Dialogue */
+  dialogue.actorLeft.setFrame(dialogue.sumireko);
+  dialogue.actorRight.setFrame(2);
+  dialogue.actorLeft.setActive(false, 500);
+  dialogue.actorRight.setVisible(false, 0);
+  dialogue.setVisible(true);
+  dialogue.setText("[Sumireko had just left the Bamboo Forest when suddenly she started falling… into the sky?]");
+
+  let background = new createjs.Bitmap("assets/images/stage1/prologue.jpg");
+  background.alpha = 0;
+  main.background.addChild(background);
+  createjs.Tween.get(background)
+    .to({alpha: 1}, 1000);
+
+  const timeline = [
+    () => {
+      dialogue.actorLeft.speak('Sumireko: "What the hell is wrong with Gensōkyō?! (I know I can fly, but this is a strange phenomenon anyways…)"')
+    }, () => {
+      dialogue.setText('Unknown Voice: "Well, duh! It’s Gensōkyō, you idiot!"')
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "Who’s there?!"');
+    }, () => {
+      dialogue.setText('[The voice speaks once more, appearing directly behind Sumireko.]')
+    }, () => {      
+      dialogue.actorRight.speak('Seija: "I’m Seija and you’re in my domain, the Shining Needle Castle. I don’t see humans here very often… What are you doing in Gensōkyō, Miss Glasses?"');
+      dialogue.actorRight.setVisible(true, 500);
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "I’m Sumireko and I don’t like heights. So if you could please help me down in some way…"');
+    }, () => {
+      dialogue.actorRight.speak('Seija: "No way! I want to see people fall up into the sky! Wathing them fall down is boring, it always ends the same way."');
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "I have no choice then! I’ll beat you up and you’ll let me down!"');
+    }, () => {
+      dialogue.actorRight.speak('Seija: Let’s see if you’re as smart as you make it seem, Miss Glasses! Solve this puzzle and maybe I’ll let you down for a while!)');
+    }, () => {
+      dialogue.setAutoStep(false);
+      dialogue.actorLeft.setVisible(false, 300);
+      dialogue.actorRight.setVisible(false, 300);
+      dialogue.setText('Click on the tiles to solve the puzzle.');
+      setTimeout(module.begin, 500);
+    }
+  ];
+
+  dialogue.setTimeline(timeline);
+  dialogue.setAutoStep(true);
+
   var data = {
     images: ["assets/images/slider/full.png"],
     frames: {width:180, height: 180, regX: 90, regY: 90},
