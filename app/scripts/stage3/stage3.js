@@ -1,4 +1,5 @@
 import main from '../main.js'
+import dialogue from "../ui/dialogue";
 
 const module = {};
 
@@ -20,6 +21,64 @@ var red, yellow, green, blue, purple, white;
 var r_img, y_img, g_img, b_img, p_img, w_img;
 
 module.run = function () {
+  /* Dialogue */
+  dialogue.actorLeft.setFrame(dialogue.sumireko);
+  dialogue.actorLeft.setActive(false, 500);
+  dialogue.actorRight.setVisible(false, 0);
+  dialogue.actorRight.setFrame(dialogue.shinmyoumaru);
+  dialogue.setVisible(true);
+  dialogue.setText("[Sumireko finally arrived at the Hakurei Shrine.]");
+
+  /*
+  background = new createjs.Bitmap("assets/images/stage1/prologue.jpg");
+  background.alpha = 0;
+  main.background.addChild(background);
+  createjs.Tween.get(background)
+    .to({alpha: 1}, 1000);*/
+
+  const timeline = [
+    () => {
+      dialogue.actorLeft.speak('Sumireko: "Hm? What’s with this old journal?"')
+    }, () => {
+      dialogue.setText('Sumireko [rang] the bell. She waited for a minute, but nobody was home. The journal started glowing again.')
+    }, () => {
+      dialogue.setText('[In the journal was written "Go inside and take the Miracle Mallet, the inchling will show up."]')
+    }, () => {
+      dialogue.setText('[Sumireko took off her shoes and entered the shrine. As soon as she entered, she was stung in the foot."]')
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "Ouch! That hurts!"')
+    }, () => {
+      dialogue.setText('Unknown: "Hey, you! I’m right here! Don’t ignore me!"')
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "Who\'s there?"')
+    }, () => {
+      dialogue.setText('[Sumireko felt another sting in her foot and looked down.' +
+        'A small girl wearing a red kimono and holding a needle was close her feet.]');
+      dialogue.actorRight.setVisible(true, 300);
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "Oh, you’re the inchling Seija spoke of."')
+    }, () => {
+      dialogue.actorRight.speak('Shinmyoumaru: "I’m Shinmyoumaru and I’m guarding the Shrine while Reimu is out!')
+    }, () => {
+      dialogue.actorRight.speak('Shinmyoumaru: "Are you looking for trouble? I may be small, but I’m not half!!')
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "Seija told me you know something about the Miracle Mallet, so I think maybe you could help me."')
+    }, () => {
+      dialogue.setText('[Shinmyoumaru stopped for a moment to think, and meanwhile Sumireko opened the journal to find more instructions.]')
+    }, () => {
+      dialogue.setAutoStep(false);
+      dialogue.actorLeft.setVisible(false, 300);
+      dialogue.actorRight.setVisible(false, 300);
+      dialogue.setText('Drag and drop puzzle pieces to solve the puzzle. Use the right mouse button to rotate.');
+      setTimeout(module.begin, 500);
+    }
+  ];
+
+  dialogue.setTimeline(timeline);
+  dialogue.setAutoStep(true);
+};
+
+module.begin = function() {
 
   // Menu assets
   var menu_bg = new createjs.Bitmap("assets/images/menu_bg.jpg");
