@@ -3,11 +3,10 @@ import mainMenu from './mainMenu.js'
 import stage1 from "../stage1/stage1.js"
 import stage2 from "../stage2/stage2.js"
 import stage3 from "../stage3/stage3.js"
-import stage4 from "../stage4/stage4.js"
 import audio from "../audio.js"
 
 const module = {};
-const stages = [stage1, stage2, stage3, stage4];
+const stages = [stage1, stage2, stage3];
 let stageSelected = false;
 const buttons = [];
 
@@ -17,7 +16,7 @@ module.run = function() {
   const canvas = document.getElementById("game");
   main.ui.alpha = 0;
 
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 3; i++) {
     const button = new createjs.Shape();
 
     //TODO: Art

@@ -1,5 +1,5 @@
 import mainMenu from './ui/mainMenu.js'
-//import mainMenu from './stage3/stage3.js'
+//import mainMenu from './stage2/stage2.js'
 import dialogue from './ui/dialogue.js'
 import preload from './preload.js'
 import audio from './audio.js'

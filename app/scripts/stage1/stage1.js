@@ -6,11 +6,11 @@ const imgWidth = 700;
 const rows = 4;
 
 const spritesheet = new createjs.SpriteSheet({
-  images: ["assets/images/stage3/map.png"],
+  images: ["assets/images/stage2/map.png"],
   frames: {width: imgWidth / rows, height: imgWidth / rows, regX: imgWidth / rows / 2, regY: imgWidth / rows / 2},
 });
 
-module.background = "assets/images/stage3/background3.jpg";
+module.background = "assets/images/stage2/background3.jpg";
 
 const pieces = [];
 let mapContainer;

@@ -28,7 +28,7 @@ module.setMusic = function(id) {
     let oldMusic = currentMusic;
     createjs.Tween.removeTweens(oldMusic);
     createjs.Tween.get(oldMusic)
-      .to({volume: 0}, 10000, createjs.Ease.sineInOut(2))
+      .to({volume: 0}, 6000, createjs.Ease.sineInOut(2))
       .call(() => {
         oldMusic.stop();
       });
