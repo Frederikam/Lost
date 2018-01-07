@@ -76,7 +76,7 @@ module.run = function() {
 
 module.begin = function() {
   var data = {
-    images: ["assets/images/slider/full.png"],
+    images: ["assets/images/stage2/tewi.png"],
     frames: {width:180, height: 180, regX: 90, regY: 90},
     animations: {
       "0": 0,
@@ -193,7 +193,7 @@ module.begin = function() {
     slider_list.push(slider_puzzle[i].id);
   }
 
-  onComplete(); // For testing
+  //onComplete(); // For testing
 };
 
 function onComplete() {
