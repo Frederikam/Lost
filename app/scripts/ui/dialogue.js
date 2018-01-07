@@ -5,7 +5,10 @@ const module = {};
 
 module.sumireko = 0;
 module.reisen = 1;
-module.shinmyoumaru = 2;
+module.seija = 2;
+module.shinmyoumaru = 3;
+module.nue = 4;
+module.reimu = 5;
 
 const boxAlpha = 0.7;
 const boxWidth = 1000;

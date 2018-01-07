@@ -80,11 +80,66 @@ module.run = function () {
     }, () => {
       dialogue.actorLeft.speak('Sumireko: "See this journal here, many pages are still missing and I’d like to have more pages to write on."')
     }, () => {
+      dialogue.actorRight.speak('Shinmyoumaru: "Okay, hang on for a second! I’ll be right back!')
+    }, () => {
+      dialogue.actorRight.setVisible(false, 500)
+    }, () => {
+      dialogue.actorRight.setVisible(true, 500)
+    }, () => {
+      dialogue.actorRight.speak('Shinmyoumaru: "Put that journal over the table.')
+    }, () => {
+      dialogue.actorRight.speak('Shinmyoumaru: "The Miracle Mallet isn’t fully charged, but it should be enough to restore the pages, if it actually works.!')
+    }, () => {
+      dialogue.setText('[The Miracle Mallet glowed and the journal turned into a pile of spell cards."]')
+    }, () => {
+      dialogue.actorRight.speak('Shinmyoumaru: "What happened?! Where did these come from?!')
+    }, () => {
+      dialogue.setText('[Sumireko took the spell cards in her hand and tried asking them."]')
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "Hey! How do I get home?! Can you hear me?!"')
+    }, () => {
+      dialogue.setText('[One of the cards in Sumireko’s hand was a Nue card."]')
+    }, () => {
+      dialogue.setText('[The figure inside the card moved and smiled, before leaving the card and hitting the girl with a kick that sent her flying across the room."]')
+    }, () => {
+      dialogue.setText('[Shinmyoumaru got her Needle Sword, but she was also sent flying across the room when a blue vector arrow hit her."]');
+      dialogue.actorRight.setVisible(false, 300);
+    }, () => {
+      dialogue.actorRight.setFrame(dialogue.nue);
+      dialogue.actorRight.speak('Nue: "Of course I can hear you! Geez, don’t scream in ears!"')
+    }, () => {
+      dialogue.actorRight.speak('Nue: "Oh yeah! Thanks for recovering some of the spell cards for me!"')
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "Who are you?! Can I go home now?!"')
+    }, () => {
+      dialogue.actorRight.speak('Nue: "I’m Nue, the coolest shape-shifting alien ever! And no, you can’t!"')
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "So you tricked me?!"')
+    }, () => {
+      dialogue.actorRight.speak('Nue: "No, you thought filling the pages would get you home."')
+    }, () => {
+      dialogue.actorRight.speak('Nue: "I was flying peacefully while looking for someone to play a prank at when you suddenly fell from the sky."')
+    }, () => {
+      dialogue.actorRight.speak('Nue: "I followed you from the Bamboo Forest and turned into a page of that old journal you had with you."')
+    }, () => {
+      dialogue.actorRight.speak('Nue: "And what a treasure! This journal contained a lot of Spell Card information on it!"')
+    }, () => {
+      dialogue.actorRight.speak('Nue: "Heaven knows the pranks I can play if I have the book completed in my hands!"')
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "If I can’t get home, then you won’t have the spell cards either!"')
+    }, () => {
+      dialogue.setText('[All the true spell cards were still in Sumireko’s hands. Nue was pissed."]')
+    }, () => {
+      dialogue.actorRight.speak('Nue: "You…! Give it back or you’ll regret it!"')
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "You want the cards? Come and take them!"')
+    }, () => {
       dialogue.setAutoStep(false);
       dialogue.actorLeft.setVisible(false, 300);
       dialogue.actorRight.setVisible(false, 300);
-      dialogue.setText('Drag and drop puzzle pieces to solve the puzzle. Use the right mouse button to rotate.');
+      dialogue.setText(""); // TODO: Lunar please replace with a short tutorial
       setTimeout(module.begin, 500);
+      setTimeout(() => dialogue.setVisible(false), 5000)
     }
   ];
 
@@ -96,7 +151,7 @@ module.begin = function() {
 
   // Menu assets
   var menu_bg = new createjs.Bitmap("assets/images/menu_bg.jpg");
-  
+
       // Puzzle assets
       cm_piece.push(""); // 0
       cm_piece.push("assets/images/colormatch/red.png"); // 1
@@ -105,18 +160,18 @@ module.begin = function() {
       cm_piece.push("assets/images/colormatch/blue.png"); // 4
       cm_piece.push("assets/images/colormatch/purple.png"); // 5
       cm_piece.push("assets/images/colormatch/white.png"); // 6
-  
+
       cm_piece.push("assets/images/colormatch/correct.png"); // 7
       cm_piece.push("assets/images/colormatch/incorrect.png"); // 8
       cm_piece.push("assets/images/colormatch/correct_icon.png"); // 9
       cm_piece.push("assets/images/colormatch/incorrect_icon.png"); // 10
       cm_piece.push("assets/images/colormatch/space.png"); // 11
-  
+
       // Container coordinates
-  
+
       // Add assets to stage
       stage.addChild(menu_bg);
-      
+
       // Populate past guess table
       // Rows for past guesses
       for(var i=0;i<4;i++) {
@@ -135,7 +190,7 @@ module.begin = function() {
               stage.addChild(cm_past_guess_container[i][j]);
           }
       }
-  
+
       // Populate past results table
       // Rows for past results
       for(var i=0;i<4;i++) {
@@ -160,20 +215,20 @@ module.begin = function() {
               stage.addChild(cm_past_guess_container[i][j]);
           }
       }
-  
+
       // Draw empty circles for piece placement
       for(var i=0;i<4;i++) {
           var startx = 550;
           var starty = 550;
-  
+
           cm_spaces[i] = new createjs.Bitmap(cm_piece[11]);
           cm_spaces[i].x = (startx + (200*i));
           cm_spaces[i].y = starty;
-  
+
           stage.addChild(cm_spaces[i]);
-  
+
           cm_spaces[i].addEventListener("click", handleMouseEvent);
-  
+
           cm_space_id.push(cm_spaces[i].id);
           //console.log(cm_space_id[i]);
   
@@ -185,9 +240,9 @@ module.begin = function() {
           cm_answer.push(getRandomInt(0,5));
           console.log(cm_answer[i]);
       }
-  
+
       // Draw selection pieces (invisible)
-      // Red - 
+      // Red -
       red = new createjs.Shape();
       red.graphics.beginFill("red").drawCircle(0,0,20);
       red.alpha = 0;
