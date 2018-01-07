@@ -38,14 +38,14 @@ module.run = function() {
 
   background = new createjs.Bitmap("assets/images/stage2/castle.png");
   background.alpha = 0;
-  main.background.addChild(background);
-  createjs.Tween.get(background)
-    .to({alpha: 1}, 1000);
+  main.background.addChild(background);  
 
   const timeline = [
     () => {
       dialogue.actorLeft.speak('Sumireko: "What the hell is wrong with Gensōkyō?! (I know I can fly, but this is a strange phenomenon anyways…)"')
     }, () => {
+      createjs.Tween.get(background)
+        .to({alpha: 1}, 1000);
       dialogue.setText('Unknown: "Well, duh! It’s Gensōkyō, you idiot!"')
     }, () => {
       dialogue.actorLeft.speak('Sumireko: "Who’s there?!"');
@@ -238,7 +238,7 @@ function onComplete() {
       dialogue.actorLeft.setVisible(false, 100);
       dialogue.setText('[Seija laughs.]');
     }, () => {
-      dialogue.actorRight.speak('Seija: "That idiot is looking for trouble if she wishes to use the Miracle Mallet… This is amazing! I was thinking about watching her close, but that spot is already taken!"');
+      dialogue.actorRight.speak('Seija: "That idiot is looking for trouble if she wishes to use the Miracle Mallet…"');
     }, () => {
       dialogue.setVisible(false);
       dialogue.actorRight.setVisible(false, 300);
