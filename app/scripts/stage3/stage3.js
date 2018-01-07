@@ -14,14 +14,14 @@ var piece_startx = 600;
 var piece_starty = 180;
 var slider_solved; // Prevents further interaction with puzzle and starts end sequence
 
-module.background = "assets/images/menu_bg.jpg";
+module.background = "assets/images/bg_shrine2.png";
 
 let background;
 
 let sliderContainer = new createjs.Container();
 
 // Menu assets
-var slider_bg =       new createjs.Bitmap("assets/images/menu_bg.jpg");
+var slider_bg =       new createjs.Bitmap("assets/images/bg_shrine2.png");
 var slider_board =    new createjs.Bitmap("assets/images/slider/board.png");
 var slider_congrats = new createjs.Bitmap("assets/images/slider/congrats.png");
 
@@ -306,7 +306,7 @@ function onComplete() {
       }, () => {
         dialogue.actorLeft.speak('Sumireko: "It was a cool adventure, and even with all that trouble I got into, I want to go back someday… To Gensōkyō"');
       }, () => {
-        dialogue.setText("The end");
+        dialogue.setText("The end ~");
         dialogue.actorLeft.setVisible(false, 500);
         dialogue.setAutoStep(false);
       }
