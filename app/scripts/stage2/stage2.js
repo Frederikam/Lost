@@ -216,7 +216,7 @@ function onComplete() {
     }, () => {
       dialogue.setText('[Another page has been filled. Glowing words slowly appear on the newly restored page... "Ask the upside-down girl about the Miracle Mallet."]');
     }, () => {
-      dialogue.setText('[Sumireko quizically stares at the page as the text fades away]');
+      dialogue.setText('[Sumireko quizzically stares at the page as the text fades away.]');
     }, () => {
       dialogue.setText('["Guess I had better ask..." Sumireko thinks to herself.]');
     }, () => {
