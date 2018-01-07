@@ -59,7 +59,7 @@ module.run = function () {
 
 	let locks = [
 		{x: 8, y: 0, color: "yellow"},
-		{x: 6, y: 7, color: "yellow"}
+		{x: 6, y: 7, color: "red"}
 	];
 
 	let unlocks = [
