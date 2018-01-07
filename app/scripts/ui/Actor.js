@@ -1,7 +1,7 @@
 import dialogue from "./dialogue";
 import main from "../main";
 
-const commonY = 620;
+const commonY = 650;
 const inactiveAlpha = 0.8;
 
 class Actor {
@@ -26,6 +26,10 @@ class Actor {
   speak(text) {
     this.setActive(true, 200);
     dialogue.text.text = text;
+
+    dialogue.actors.forEach(a => {
+      if (a !== this && a.active) a.setActive(false, 200);
+    });
   }
 
   // Indicates who is speaking. Inactive actors lose alpha
