@@ -1,5 +1,6 @@
 import main from '../main.js'
 import dialogue from '../ui/dialogue.js'
+import audio from "../audio";
 
 const module = {};
 
@@ -21,9 +22,10 @@ let background = null;
 
 module.run = function () {
   /* Dialogue */
-  dialogue.actorLeft.setFrame(0);
+  dialogue.actorLeft.setFrame(dialogue.sumireko);
   dialogue.actorLeft.setActive(false, 500);
   dialogue.actorRight.setVisible(false, 0);
+  dialogue.actorRight.setFrame(dialogue.reisen);
   dialogue.setVisible(true);
   dialogue.setText("[Sumireko was in her everyday boring life, looking for ways to go back to Gensōkyō." +
     " One night, she was visiting a Shrine when she found an old handmade journal.]");
@@ -79,6 +81,31 @@ module.run = function () {
       dialogue.actorLeft.speak('Sumireko: "I’ve had enough! I’ve been walking for three hours in a single direction and it’s the same broken bamboo again!"');
       createjs.Tween.get(main.background)
         .to({alpha: 1}, 500)
+
+    }, () => {
+      dialogue.setText('[Sumireko sits on a stone and pulls out her smartphone.]')
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "I guess I’ll take a picture and try to walk in another direction."');
+    }, () => {
+      dialogue.setText('[She pointed her phone to the broken bamboo and…]')
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "Hm? A rabbit behind the bamboos?"');
+    }, () => {
+      dialogue.setText('[She raised her head and saw a small group of white rabbits.]')
+    }, () => {
+      dialogue.setText('[They suddenly got scared when she noticed them, and Sumireko started running towards it.]')
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "If I can’t find a way out by myself, at least I could use some help from these rabbits!"');
+    }, () => {
+      dialogue.setText('[Sumireko ran into a clearing, and encountered a familiar face.]')
+    }, () => {
+      dialogue.actorRight.speak('Reisen: "You’re that human from before. What are you doing here in the Bamboo Forest of the Lost?"');
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "Well… I’m lost! I can’t find my way out here… Can you help me?"');
+    }, () => {
+      dialogue.actorRight.speak('Reisen: "You were chasing the rabbits, weren\'t you? Why should I help you?"');
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "I was not chasing them! I followed them to find an exit, until I ran into you!"');
     }, () => {
       dialogue.setAutoStep(false);
       dialogue.actorLeft.setVisible(false, 300);
@@ -92,6 +119,8 @@ module.run = function () {
 };
 
 module.begin = function() {
+  audio.setMusic("puzzle");
+
   /* Begin gameplay */
   ended = false;
   mapContainer = new createjs.Container();

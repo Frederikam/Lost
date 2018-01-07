@@ -42,7 +42,6 @@ module.run = function() {
 };
 
 function onSelect(stageId) {
-  audio.setMusic("puzzle");
   createjs.Tween.get(main.ui)
     .to({alpha: 0}, 500)
     .wait(200)

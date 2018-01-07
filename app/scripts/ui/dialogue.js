@@ -3,6 +3,9 @@ import Actor from './Actor.js'
 
 const module = {};
 
+module.sumireko = 0;
+module.reisen = 1;
+
 const boxAlpha = 0.7;
 const boxWidth = 1000;
 
