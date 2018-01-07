@@ -9,7 +9,9 @@ const manifestRaw = [
   "assets/images/menu_game_jam_logo.png",
   "assets/images/menu_credits.png",
   "assets/images/slider/board.png",
-  "assets/images/slider/full.png"
+  "assets/images/slider/full.png",
+  "assets/audio/menu.ogg",
+  "assets/audio/puzzle.ogg"
 ];
 
 const queue = new createjs.LoadQueue();

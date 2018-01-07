@@ -2,6 +2,7 @@ import mainMenu from './ui/mainMenu.js'
 //import mainMenu from './stage3/stage3.js'
 import dialogue from './ui/dialogue.js'
 import preload from './preload.js'
+import audio from './audio.js'
 const module = {};
 
 module.stage = new createjs.Stage("game");
@@ -39,6 +40,7 @@ preload.load(function() {
   createjs.Tween.get(spinnerContainer)
     .to({alpha: 0}, 500)
     .call(function() {
+      audio.setMusic("menu");
       mainMenu.run(module.stage);
       dialogue.onLoad();
     });

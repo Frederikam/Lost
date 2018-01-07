@@ -4,6 +4,7 @@ import stage1 from "../stage1/stage1.js"
 import stage2 from "../stage2/stage2.js"
 import stage3 from "../stage3/stage3.js"
 import stage4 from "../stage4/stage4.js"
+import audio from "../audio.js"
 
 const module = {};
 const stages = [stage1, stage2, stage3, stage4];
@@ -42,6 +43,7 @@ module.run = function() {
 };
 
 function onSelect(stageId) {
+  audio.setMusic("puzzle");
   createjs.Tween.get(main.ui)
     .to({alpha: 0}, 500)
     .wait(200)
