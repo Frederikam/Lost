@@ -50,6 +50,14 @@ module.step = function() {
   timeline[step]();
 };
 
+module.setText = function(text) {
+  module.text.text = text;
+
+  module.actors.forEach((a) =>{
+    if (a.visible) a.setActive(false, 300)
+  })
+};
+
 let visible = false;
 module.setVisible = function(bool) {
   if (bool === visible) return;
@@ -61,6 +69,15 @@ module.setVisible = function(bool) {
   } else {
     createjs.Tween.get(dialogueBox).to({alpha: 0}, 300);
     createjs.Tween.get(dialogueText).to({alpha: 0}, 300);
+  }
+};
+
+let clickListener = () => module.step();
+module.setAutoStep = function(bool) {
+  if (bool) {
+    document.getElementById("game").addEventListener("click", clickListener);
+  } else {
+    document.getElementById("game").removeEventListener("click", clickListener);
   }
 };
 

@@ -1,4 +1,5 @@
 import main from '../main.js'
+import dialogue from '../ui/dialogue.js'
 
 const module = {};
 
@@ -6,31 +7,65 @@ const imgWidth = 700;
 const rows = 4;
 
 const spritesheet = new createjs.SpriteSheet({
-  images: ["assets/images/stage2/map.png"],
+  images: ["assets/images/stage1/map.png"],
   frames: {width: imgWidth / rows, height: imgWidth / rows, regX: imgWidth / rows / 2, regY: imgWidth / rows / 2},
 });
 
-module.background = "assets/images/stage2/background3.jpg";
+//module.background = "assets/images/stage1/background1.jpg";
 
 const pieces = [];
 let mapContainer;
 let ended = false;
 
 module.run = function () {
+  /* Dialogue */
+  dialogue.actorLeft.setFrame(0);
+  dialogue.actorLeft.setActive(false, 500);
+  dialogue.actorRight.setVisible(false, 0);
+  dialogue.setVisible(true);
+  dialogue.setText("[Sumireko was in her everyday boring life, looking for ways to go back to Gensoukyou." +
+    " One night, she was visiting a Shrine when she found an old handmade journal.]");
+
+  const timeline = [
+    () => {
+      dialogue.actorLeft.speak('Sumireko: "Hm? What’s with this old journal?"')
+    },
+    () => {
+      dialogue.setText('[Sumireko opened the journal to look on the inside.]')
+    },
+    () => {
+      dialogue.actorLeft.speak('Sumireko: "Spell cards? And several pages are missing. Someone must have ripped them off for a reason…"');
+    },
+    () => {
+      dialogue.setAutoStep(false);
+      dialogue.actorLeft.setVisible(false, 300);
+      dialogue.setText('Drag and drop puzzle pieces to solve the puzzle. Use the right mouse button to rotate.');
+      setTimeout(module.begin, 500);
+    }
+  ];
+
+  dialogue.setTimeline(timeline);
+  dialogue.setAutoStep(true);
+};
+
+module.begin = function() {
+  /* Begin gameplay */
   ended = false;
   mapContainer = new createjs.Container();
-  mapContainer.x = 1920/2;
-  mapContainer.y = 1080/2;
-  mapContainer.regX = imgWidth/2;
-  mapContainer.regY = imgWidth/2;
+  mapContainer.x = 1920 / 2;
+  mapContainer.y = 1080 / 2;
+  mapContainer.regX = imgWidth / 2;
+  mapContainer.regY = imgWidth / 2;
   main.foreground.addChild(mapContainer);
-  main.foreground.alpha = 0;
+  main.foreground.alpha = 1;
   createjs.Tween.get(main.foreground)
     .wait(2200)
     .to({alpha: 1}, 2000);
 
   const spriteOrder = [];
-  for (let i = 0; i < rows*rows; i++) {spriteOrder.push(i)}
+  for (let i = 0; i < rows * rows; i++) {
+    spriteOrder.push(i)
+  }
   shuffle(spriteOrder);
 
   let i = 0;
@@ -38,13 +73,13 @@ module.run = function () {
     for (let x = 0; x < rows; x++) {
       let piece = new createjs.Sprite(spritesheet);
       piece.gotoAndStop(spriteOrder[i]);
-      piece.x = x * imgWidth/rows + imgWidth/rows/2;
-      piece.y = y * imgWidth/rows + imgWidth/rows/2;
+      piece.x = x * imgWidth / rows + imgWidth / rows / 2;
+      piece.y = y * imgWidth / rows + imgWidth / rows / 2;
 
       piece.rotation = Math.floor(Math.random() * 4) * 90;
       mapContainer.addChild(piece);
-      piece.addEventListener("mousedown", function(event) {
-        if(isComplete()) return;
+      piece.addEventListener("mousedown", function (event) {
+        if (isComplete()) return;
 
         if (event.nativeEvent.button === 2) {
           onRightMouseDown(event)
