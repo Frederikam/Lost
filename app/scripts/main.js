@@ -37,13 +37,15 @@ createjs.Tween.get(spinnerContainer, {loop:true})
 
 
 preload.load(function() {
-  createjs.Tween.get(spinnerContainer)
-    .to({alpha: 0}, 500)
-    .call(function() {
-      audio.setMusic("menu");
-      mainMenu.run(module.stage);
-      dialogue.onLoad();
-    });
+  audio.load(() => {
+    createjs.Tween.get(spinnerContainer)
+      .to({alpha: 0}, 500)
+      .call(function() {
+        audio.setMusic("menu");
+        mainMenu.run(module.stage);
+        dialogue.onLoad();
+      });
+  })
 });
 
 const handleViewport = function() {
