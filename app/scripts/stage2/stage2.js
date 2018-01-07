@@ -15,11 +15,14 @@ var slider_solved; // Prevents further interaction with puzzle and starts end se
 
 module.background = "assets/images/menu_bg.jpg";
 
+let sliderContainer = new createjs.Container();
+
 // Menu assets
 var slider_bg =       new createjs.Bitmap("assets/images/menu_bg.jpg");
 var slider_board =    new createjs.Bitmap("assets/images/slider/board.png");
 var slider_congrats = new createjs.Bitmap("assets/images/slider/congrats.png");
 
+let ended = false;
 
 module.run = function() {
   /* Dialogue */
@@ -50,7 +53,7 @@ module.run = function() {
     }, () => {
       dialogue.actorLeft.speak('Sumireko: "I’m Sumireko and I don’t like heights. So if you could please help me down in some way…"');
     }, () => {
-      dialogue.actorRight.speak('Seija: "No way! I want to see people fall up into the sky! Wathing them fall down is boring, it always ends the same way."');
+      dialogue.actorRight.speak('Seija: "No way! I want to see people fall up into the sky! Watching them fall down is boring, it always ends the same way."');
     }, () => {
       dialogue.actorLeft.speak('Sumireko: "I have no choice then! I’ll beat you up and you’ll let me down!"');
     }, () => {
@@ -59,14 +62,16 @@ module.run = function() {
       dialogue.setAutoStep(false);
       dialogue.actorLeft.setVisible(false, 300);
       dialogue.actorRight.setVisible(false, 300);
-      dialogue.setText('Click on the tiles to solve the puzzle.');
+      dialogue.setVisible(false);
       setTimeout(module.begin, 500);
     }
   ];
 
   dialogue.setTimeline(timeline);
   dialogue.setAutoStep(true);
+}
 
+module.begin = function() {
   var data = {
     images: ["assets/images/slider/full.png"],
     frames: {width:180, height: 180, regX: 90, regY: 90},
@@ -125,9 +130,14 @@ module.run = function() {
   */
 
   // Add assets to stage
-  main.foreground.addChild(slider_bg);
-  main.foreground.addChild(slider_board);
-  main.foreground.addChild(slider_congrats);
+  sliderContainer.addChild(slider_bg);
+  sliderContainer.addChild(slider_board);
+  sliderContainer.addChild(slider_congrats);
+
+  sliderContainer.alpha = 0;
+  main.foreground.addChild(sliderContainer);
+  createjs.Tween.get(sliderContainer)
+    .to({alpha: 1}, 1000);
 
   // Define initial placement of puzzle pieces
   for(var i=0;i<25;i++) {
@@ -142,55 +152,12 @@ module.run = function() {
     }
   }
 
-  // Shuffle pieces for puzzle
-  function shuffle(a) {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-
-  var tileCount = 25;
-
-  function sumInversions() {
-    var inversions = 0;
-    // Loop for each number
-    for(var i=0;i<25;i++) {
-      // Loop for each comparison
-      for(var j=(i+1);j<25;j++) {
-        // Is the target number smaller than itself?
-        if(slider_puzzle[i].id > slider_puzzle[j].id) {
-          inversions++;
-        }
-      }
-    }
-    console.log(inversions);
-    return inversions;
-  }
-
-  function isSolvable() {
-    var sum = sumInversions();
-    if(sum % 2 == 1 && sum % 5 == 0 && sum % 10 != 0 && (sum == 125 || sum == 145 || sum == 185)) {
-      // Check which row the empty box is in
-      for(var i=0;i<25;i++) {
-        if(slider_puzzle[i].id == (24+slider_start_piece) && ((Math.floor(i / 5)) % 2 == 1) && (i%5 == 0 || i%5 == 2 || i%5 == 4)) {
-          console.log("Empty grid: "+i);
-          return true;
-        }
-      }
-      return false;
-    }
-    else {
-      return false;
-    }
-
-  }
+  const tileCount = 25;
 
   // Shuffle puzzle
   shuffle(slider_puzzle);
   // Verify the puzzle is solvable
-  for(var i=0;(i<1000);i++) {
+  for(let i=0;(i<1000);i++) {
     if(!isSolvable()) {
       console.log("re-shuffling!");
       shuffle(slider_puzzle);
@@ -200,11 +167,10 @@ module.run = function() {
     }
   }
 
-
   // Add pieces to board
-  for(var i=0;i<25;i++) {
-    var col = i % 5;
-    var row = Math.floor(i / 5);
+  for(let i=0;i<25;i++) {
+    const col = i % 5;
+    const row = Math.floor(i / 5);
 
     // Find blank space position
     if(slider_puzzle[i] == 24) {
@@ -214,7 +180,7 @@ module.run = function() {
     slider_puzzle[i].x = (piece_startx + ((piece_center*2)*col));
     slider_puzzle[i].y = (piece_starty + ((piece_center*2)*row));
 
-    main.foreground.addChild(slider_puzzle[i]);
+    sliderContainer.addChild(slider_puzzle[i]);
     slider_puzzle[i].stop(); // Prevent animation for each piece
 
     // Define mouse interactions for pieces
@@ -223,7 +189,113 @@ module.run = function() {
     // Populate starting list of slider puzzle pieces after shuffle
     slider_list.push(slider_puzzle[i].id);
   }
+
+  onComplete(); // For testing
 };
+
+function onComplete() {
+  //if (ended) return; // Debounce
+  //ended = true;
+  console.log("Completed!");
+
+  createjs.Tween.get(sliderContainer)
+    .to({y: sliderContainer.y + 50, alpha: 0}, 1000)
+    .call(function() {
+      main.foreground.removeChild(sliderContainer);
+    });
+
+  dialogue.setVisible(true);
+  dialogue.actorLeft.setVisible(true, 300);
+  dialogue.actorRight.speak('Seija: "Wow such skill, much awesome! I totally lost! Miss Glasses has a brain under the hat!"');
+
+  //audio.setMusic("menu");
+
+  const timeline = [
+    () => {
+      dialogue.setText('[The journal glows once again. Sumireko opens it..]');
+    }, () => {
+      dialogue.setText('[Another page has been filled. Glowing words slowly appear on the newly restored page... "Ask the upside-down girl about the Miracle Mallet."]');
+    }, () => {
+      dialogue.setText('[Sumireko quizically stares at the page as the text fades away]');
+    }, () => {
+      dialogue.setText('["Guess I had better ask..." Sumireko thinks to herself.]');
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: Um.. by the way Seija, do you know anything about the Miracle Mallet?');
+    }, () => {
+      dialogue.actorRight.speak('Seija: "No, I’ve never heard of it before! I swear on my name!"');
+    }, () => {
+      dialogue.actorRight.speak('Seija: "But... if you want some information, you should go to the Hakurei Shrine. There’s an inchling there who could help you, so watch where you step!"');
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "Thanks!"');
+    }, () => {
+      dialogue.setText('[Seija smiles and nods her head in acknowledgement.]');
+    }, () => {
+      dialogue.setText('[At that moment Sumireko plummets downward, shouting curses as she falls.]');
+    }, () => {
+      dialogue.actorLeft.setVisible(false, 100);
+      dialogue.setText('[Seija laughs.]');
+    }, () => {
+      dialogue.actorRight.speak('Seija: "That idiot is looking for trouble if she wishes to use the Miracle Mallet… This is amazing! I was thinking about watching her close, but that spot is already taken!"');
+    }, () => {
+      dialogue.setVisible(false);
+      dialogue.actorRight.setVisible(false, 300);
+      dialogue.setAutoStep(false);
+      createjs.Tween.get(background)
+        .to({alpha: 0}, 1000)
+        .call(() => {
+          main.background.removeChild(background);
+          stage2.run();
+        });
+    }
+  ];
+
+  dialogue.setTimeline(timeline);
+  dialogue.setAutoStep(true);
+}
+
+
+// Shuffle pieces for puzzle
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function sumInversions() {
+  var inversions = 0;
+  // Loop for each number
+  for(var i=0;i<25;i++) {
+    // Loop for each comparison
+    for(var j=(i+1);j<25;j++) {
+      // Is the target number smaller than itself?
+      if(slider_puzzle[i].id > slider_puzzle[j].id) {
+        inversions++;
+      }
+    }
+  }
+  console.log(inversions);
+  return inversions;
+}
+
+function isSolvable() {
+  var sum = sumInversions();
+  if(sum % 2 == 1 && sum % 5 == 0 && sum % 10 != 0 && (sum == 125 || sum == 145 || sum == 185)) {
+    // Check which row the empty box is in
+    for(var i=0;i<25;i++) {
+      if(slider_puzzle[i].id == (24+slider_start_piece) && ((Math.floor(i / 5)) % 2 == 1) && (i%5 == 0 || i%5 == 2 || i%5 == 4)) {
+        console.log("Empty grid: "+i);
+        return true;
+      }
+    }
+    return false;
+  }
+  else {
+    return false;
+  }
+
+}
 
 function handleMouseEvent(event) {
   if(slider_solved != 1) {
@@ -370,6 +442,8 @@ function handleMouseEvent(event) {
         .to({scaleX: 1, scaleY: 1, alpha: 1}, 750, createjs.Ease.getPowInOut(2))
         .wait(2000)
         .to({x: -1000, alpha: 0}, 1500, createjs.Ease.getPowInOut(2));
+
+      onComplete();
     }
   }
 }
