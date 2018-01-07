@@ -99,7 +99,7 @@ module.run = function() {
 
 module.begin = function() {
   var data = {
-    images: ["assets/images/stage2/tewi.png"],
+    images: ["assets/images/stage2/nue_puzzle.png"],
     frames: {width:180, height: 180, regX: 90, regY: 90},
     animations: {
       "0": 0,
