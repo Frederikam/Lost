@@ -3,12 +3,13 @@ import Actor from './Actor.js'
 
 const module = {};
 
-module.sumireko = 0;
-module.reisen = 1;
+module.sumireko = 3;
+module.reisen = 0;
 module.seija = 2;
-module.shinmyoumaru = 3;
+module.shinmyoumaru = 5;
 module.nue = 4;
-module.reimu = 5;
+module.reimu = 1;
+module.shinmyoumaruMirrored = 6;
 
 const boxAlpha = 0.7;
 const boxWidth = 1000;
@@ -16,7 +17,7 @@ const boxWidth = 1000;
 let dialogueBox;
 let dialogueText;
 const spritesheet = new createjs.SpriteSheet({
-  images: ["assets/images/slider/full.png"], //TODO: Replace placeholder
+  images: ["assets/images/characters.png"],
   frames: {width: 300, height: 400},
 });
 
@@ -38,8 +39,7 @@ module.onLoad = function() {
   module.text = dialogueText;
   main.dialogue.addChild(dialogueText);
 
-  // TODO: Symmetry
-  module.actorLeft = new Actor(spritesheet, dialogueBox.x - 320, true);
+  module.actorLeft = new Actor(spritesheet, dialogueBox.x - 320 - 150, true);
   module.actorRight = new Actor(spritesheet, dialogueBox.x + dialogueBox.width, false);
   module.actors = [module.actorLeft, module.actorRight];
 };
