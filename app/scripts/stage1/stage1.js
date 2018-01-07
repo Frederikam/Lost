@@ -9,7 +9,7 @@ const imgWidth = 700;
 const rows = 4;
 
 const spritesheet = new createjs.SpriteSheet({
-  images: ["assets/images/stage1/map.png"],
+  images: ["assets/images/stage1/map.jpg"],
   frames: {width: imgWidth / rows, height: imgWidth / rows, regX: imgWidth / rows / 2, regY: imgWidth / rows / 2},
 });
 
