@@ -7,25 +7,25 @@ import TrackGrid from "../puzzle-cube/track-grid.js"
 const module = {};
 
 module.run = function () {
-	//Drag and drop example	
-	var stage = main.stage;
+	//Drag and drop example
+  const stage = main.stage;
 
-	//TODO: Remove updates from event handlers if we move to a tick-based system instead of a reactive one
-	var ball = new Ball(5, "red", {x: 500,  y: 200});
+  //TODO: Remove updates from event handlers if we move to a tick-based system instead of a reactive one
+  const ball = new Ball(5, "red", {x: 500, y: 200});
 
-	var tracksContainer = new createjs.Container();
-	var slidersContainer = new createjs.Container();
+  const tracksContainer = new createjs.Container();
+  const slidersContainer = new createjs.Container();
 
-	var sliders = [
-		new Slider({x: 706, y: 192}, 200, "vertical"),
-		new Slider({x: 776, y: 192}, 400, "vertical"),
-		new Slider({x: 846, y: 192}, 600, "vertical"),
-		new Slider({x: 706, y: 195}, 200, "horizontal"),
-		new Slider({x: 776, y: 265}, 200, "horizontal"),
-		new Slider({x: 846, y: 335}, 200, "horizontal")
-	];
+  const sliders = [
+    new Slider({x: 706, y: 192}, 200, "vertical"),
+    new Slider({x: 776, y: 192}, 400, "vertical"),
+    new Slider({x: 846, y: 192}, 600, "vertical"),
+    new Slider({x: 706, y: 195}, 200, "horizontal"),
+    new Slider({x: 776, y: 265}, 200, "horizontal"),
+    new Slider({x: 846, y: 335}, 200, "horizontal")
+  ];
 
-	sliders.forEach(function(slider) {
+  sliders.forEach(function(slider) {
 		slidersContainer.addChild(slider.displayObject);
 
 		slider.displayObject.on("pressup", function(event) {
@@ -40,23 +40,23 @@ module.run = function () {
 					event.target.y = event.stageY;
 				}
 			}
-			
+
 			if(slider.orientation === "horizontal") {
 				if(event.stageX > 494 && event.stageX < 1400 - slider.length) {
 					event.target.x = event.stageX;
 				}
-			}			
+			}
 			stage.update();
 		});
 	});
 
-	var gridSideOne = new TrackGrid();
-	tracksContainer.addChild(gridSideOne.displayObject);
+  const gridSideOne = new TrackGrid();
+  tracksContainer.addChild(gridSideOne.displayObject);
 
-	var sliderOne = new Slider({x: 706, y:0}, 500, "vertical");
-	var sliderTwo = new Slider({x: 706, y:0}, 500, "vertical")
+  const sliderOne = new Slider({x: 706, y: 0}, 500, "vertical");
+  const sliderTwo = new Slider({x: 706, y: 0}, 500, "vertical");
 
-	console.log(slidersContainer);
+  console.log(slidersContainer);
 	stage.addChild(tracksContainer);
 	stage.addChild(ball.displayObject);
 	stage.addChild(slidersContainer);
@@ -68,7 +68,7 @@ module.run = function () {
 		console.log(`draggable has been picked up at x: ${ball.displayObject.x} y: ${ball.displayObject.y}`);
 		stage.update();
 	});
-	
+
 	ball.displayObject.on("pressmove", function(event) {
 		if(gridSideOne.displayObject.hitTest(event.stageX, event.stageY) && ball.held) {
 			event.target.x = event.stageX;
@@ -80,7 +80,7 @@ module.run = function () {
 		console.log(gridSideOne.displayObject.hitTest(ball.displayObject.x, ball.displayObject.y));
 		stage.update();
 	});
-	
+
 	ball.displayObject.on("pressup", function(event) {
 		ball.held = false;
 		stage.update();
