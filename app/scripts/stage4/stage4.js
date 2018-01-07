@@ -1,90 +1,79 @@
 import main from "../main.js"
-import Ball from "../puzzle-cube/ball.js"
-import Slider from "../puzzle-cube/slider.js"
-import Track from "../puzzle-cube/track.js"
-import TrackGrid from "../puzzle-cube/track-grid.js"
 
 const module = {};
 
+const imgWidth = 700;
+module.background = "assets/images/stage3/background3.jpg";
+
+let gridContainer;
+
 module.run = function () {
-	//Drag and drop example
-  const stage = main.stage;
+	gridContainer = new createjs.Container();
+	gridContainer.x = 1920/2;
+  	gridContainer.y = 1080/2;
+  	gridContainer.regX = imgWidth/2;
+  	gridContainer.regY = imgWidth/2;
+	main.foreground.addChild(gridContainer);
+  	main.foreground.alpha = 0;
+  	createjs.Tween.get(main.foreground)
+    	.wait(2200)
+    	.to({alpha: 1}, 2000);
 
-  //TODO: Remove updates from event handlers if we move to a tick-based system instead of a reactive one
-  const ball = new Ball(5, "red", {x: 500, y: 200});
+	const rows = 8;
+	const columns = 9;
 
-  const tracksContainer = new createjs.Container();
-  const slidersContainer = new createjs.Container();
+	let grid = {};
+	let points = [];
 
-  const sliders = [
-    new Slider({x: 706, y: 192}, 200, "vertical"),
-    new Slider({x: 776, y: 192}, 400, "vertical"),
-    new Slider({x: 846, y: 192}, 600, "vertical"),
-    new Slider({x: 706, y: 195}, 200, "horizontal"),
-    new Slider({x: 776, y: 265}, 200, "horizontal"),
-    new Slider({x: 846, y: 335}, 200, "horizontal")
-  ];
+	for (let x = 0; x < rows; x++) {
+		for (let y = 0; y < columns; y++) {
+			let point = new createjs.Shape();
 
-  sliders.forEach(function(slider) {
-		slidersContainer.addChild(slider.displayObject);
+			point.graphics.beginFill("#FFF").drawCircle(0,0,3);
+			point.set({x: x * imgWidth/rows, y: y * imgWidth/columns});
 
-		slider.displayObject.on("pressup", function(event) {
-			console.log(event);
-		});
-
-		slider.displayObject.on("pressmove", function(event) {
-			//console.log(slider);
-			//event.target.x = event.stageX;
-			if(slider.orientation === "vertical") {
-				if(event.stageY > 192 && event.stageY < 1050 - slider.length) {
-					event.target.y = event.stageY;
-				}
-			}
-
-			if(slider.orientation === "horizontal") {
-				if(event.stageX > 494 && event.stageX < 1400 - slider.length) {
-					event.target.x = event.stageX;
-				}
-			}
-			stage.update();
-		});
-	});
-
-  const gridSideOne = new TrackGrid();
-  tracksContainer.addChild(gridSideOne.displayObject);
-
-  const sliderOne = new Slider({x: 706, y: 0}, 500, "vertical");
-  const sliderTwo = new Slider({x: 706, y: 0}, 500, "vertical");
-
-  console.log(slidersContainer);
-	stage.addChild(tracksContainer);
-	stage.addChild(ball.displayObject);
-	stage.addChild(slidersContainer);
-	stage.update();
-
-	//event listeners
-	ball.displayObject.on("mousedown", function(event) {
-		ball.held = true;
-		console.log(`draggable has been picked up at x: ${ball.displayObject.x} y: ${ball.displayObject.y}`);
-		stage.update();
-	});
-
-	ball.displayObject.on("pressmove", function(event) {
-		if(gridSideOne.displayObject.hitTest(event.stageX, event.stageY) && ball.held) {
-			event.target.x = event.stageX;
-			event.target.y = event.stageY;
-		} else {
-			ball.held = false;
+			gridContainer.addChild(point);
+			points.push(point);
 		}
-		//console.log(circle.x, circle.y);
-		console.log(gridSideOne.displayObject.hitTest(ball.displayObject.x, ball.displayObject.y));
-		stage.update();
-	});
+	}	
+	main.stage.update();
 
-	ball.displayObject.on("pressup", function(event) {
-		ball.held = false;
-		stage.update();
-	});
+	let ball = {x: 0, y: 5};
+	let sliders = [
+		//x,y to x,y
+		//0,1 to 1,1
+		//4,1 to 5,1
+		//6,0 to 6,1
+		//7,1 to 8,1
+		//4,2 to 6,2
+		//2,3 to 2,6
+		//3,3 to 5,3
+		//6,3 to 6,6
+		//7,3 to 8,3
+		//3,6 to 5,6
+		//7,6 to 8,6
+		//1,8 to 3,8
+		//3,8 to 3,9
+		//6,8 to 8,8
+	];
+
+	let locks = [
+		{x: 8, y: 0, color: "yellow"},
+		{x: 6, y: 7, color: "yellow"}
+	];
+
+	let unlocks = [
+		{x: 8, y: 0, color: "yellow"},
+		{x: 8, y: 9, color: "red"},
+	];
 };
+
+function tick() {
+  // Get mouse position relative to container
+  const pt = mapContainer.globalToLocal(mapContainer.stage.mouseX, mapContainer.stage.mouseY);
+  mouseDownEvent.currentTarget.x = pt.x;
+  mouseDownEvent.currentTarget.y = pt.y;
+
+}
 
 export default module;
