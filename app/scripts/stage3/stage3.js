@@ -15,6 +15,8 @@ var cm_spaces = []; // Empty space for player to place pieces for puzzle
 var cm_space_id = []; // Stores IDs for player-interactive spaces
 var clicked_last; // Stores id of the last clicked item
 var cm_thumb_id = []; // Stores IDs of color thumbnails
+var cm_answer = []; // Stores ran generated answer for player to guess
+var cm_guess = [7,7,7,7]; // Stores player guess
 
 // Selection pieces
 var red, yellow, green, blue, purple, white;
@@ -174,6 +176,14 @@ module.begin = function() {
   
           cm_space_id.push(cm_spaces[i].id);
           //console.log(cm_space_id[i]);
+  
+          // Generate sequence of colors to guess
+          function getRandomInt(min, max) {
+              return Math.floor(Math.random() * (max - min + 1)) + min;
+          }
+  
+          cm_answer.push(getRandomInt(0,5));
+          console.log(cm_answer[i]);
       }
   
       // Draw selection pieces (invisible)
@@ -237,68 +247,117 @@ function handleMouseEvent(event) {
 
   // Find out if a clear space button was clicked
   for(var i=0;i<4;i++) {
-    if(cm_space_id[i] === event.target.id) {
-      // Check if displayed
-      if(red.alpha === 0 || clicked_last !== clicked) {
-        // Display color selector
-        // Get position of clicked button
-        var clickedx = (cm_spaces[i].x+60);
-        var clickedy = (cm_spaces[i].y+60);
-        // Red - 1
-        red.x = (clickedx + 0);
-        red.y = (clickedy - 80);
-        red.alpha = 1;
-        // Yellow - 2
-        yellow.x = (clickedx + 70);
-        yellow.y = (clickedy - 40);
-        yellow.alpha = 1;
-        // Green - 3
-        green.x = (clickedx + 70);
-        green.y = (clickedy + 40);
-        green.alpha = 1;
-        // Blue - 4
-        blue.x = (clickedx + 0);
-        blue.y = (clickedy + 80);
-        blue.alpha = 1;
-        // Purple - 5
-        purple.x = (clickedx - 70);
-        purple.y = (clickedy + 40);
-        purple.alpha = 1;
-        // White - 6
-        white.x = (clickedx - 70);
-        white.y = (clickedy - 40);
-        white.alpha = 1;
+      if(cm_space_id[i] == event.target.id) {
+          // Check if displayed
+          if(red.alpha == 0 || clicked_last != clicked) {
+              // Display color selector
+              // Get position of clicked button
+              var clickedx = (cm_spaces[i].x+60);
+              var clickedy = (cm_spaces[i].y+60);
+              // Red - 1
+              red.x = (clickedx + 0);
+              red.y = (clickedy - 80);
+              red.alpha = 1;
+              // Yellow - 2
+              yellow.x = (clickedx + 70);
+              yellow.y = (clickedy - 40);
+              yellow.alpha = 1;
+              // Green - 3
+              green.x = (clickedx + 70);
+              green.y = (clickedy + 40);
+              green.alpha = 1;
+              // Blue - 4
+              blue.x = (clickedx + 0);
+              blue.y = (clickedy + 80);
+              blue.alpha = 1;
+              // Purple - 5
+              purple.x = (clickedx - 70);
+              purple.y = (clickedy + 40);
+              purple.alpha = 1;
+              // White - 6
+              white.x = (clickedx - 70);
+              white.y = (clickedy - 40);
+              white.alpha = 1;
+          }
+          else if(clicked_last == clicked) {
+              // Hide from display
+              red.alpha = 0;
+              yellow.alpha = 0;
+              green.alpha = 0;
+              blue.alpha = 0;
+              purple.alpha = 0;
+              white.alpha = 0;
+          }
       }
-      else if(clicked_last === clicked) {
-        // Hide from display
-        red.alpha = 0;
-        yellow.alpha = 0;
-        green.alpha = 0;
-        blue.alpha = 0;
-        purple.alpha = 0;
-        white.alpha = 0;
-      }
-    }
   }
 
   // Find out if a thumbnail was clicked
   for(var i=0;i<6;i++) {
-    if(cm_thumb_id[i] == event.target.id) {
-      // i cooresponds to color
-      // i = 0 = red / cm_piece[1] = red (add 1 to i)
-      var colornum = i;
+      if(cm_thumb_id[i] == event.target.id) {
+          // i cooresponds to color
+          // i = 0 = red / cm_piece[1] = red (add 1 to i)
+          var colornum = i;
+          
+          for(var j=0;j<4;j++) {
+              if(cm_space_id[j] == clicked_last) {
+                  // Store selected color in last clicked space
+                  //console.log(cm_spaces[j].image);
+                  cm_spaces[j].image = cm_image[colornum].image;
+                  //console.log(cm_spaces[j].image);
+                  // Remove thumbnails from view
+                  red.alpha = 0;
+                  yellow.alpha = 0;
+                  green.alpha = 0;
+                  blue.alpha = 0;
+                  purple.alpha = 0;
+                  white.alpha = 0;
 
-      for(var j=0;j<4;j++) {
-        if(cm_space_id[j] == clicked_last) {
-            // Store selected color in last clicked space
-            cm_spaces[j].image = cm_image[colornum].image;
-            console.log(cm_spaces[j]+": "+colornum);
-        }
+                  // Store player guess
+                  cm_guess[j] = colornum;
+                  console.log("Guess: "+cm_guess[j]);
+
+
+                  // Check if all spaces are filled with a color
+                  var spaceimgstr = '<img src="'+cm_piece[11]+'">';
+                  //console.log("var: "+spaceimgstr);
+                  if(cm_guess[0] != 7 && cm_guess[1] != 7 && cm_guess[2] != 7 && cm_guess[3] != 7) {
+                      console.log("GUESS: "+cm_guess[0]+", "+cm_guess[1]+", "+cm_guess[2]+", "+cm_guess[3]);
+                      console.log("ANSWER: "+cm_answer[0]+", "+cm_answer[1]+", "+cm_answer[2]+", "+cm_answer[3]);
+                      // Compare logic
+                      var correct = 1;
+                      for(var k=0;k<4;k++) {
+                          if(cm_answer[k] == cm_guess[k]) {
+                              // Correct, move on
+                              //console.log("CORRECT Answer comparison"+cm_answer[k]+", "+cm_guess[k]);
+                          }
+                          else {
+                              correct = 0; // incorrect answer found
+                              //console.log("INCORRECT Answer comparison"+cm_answer[k]+", "+cm_guess[k]);
+                              //console.log("incorrect");
+                              break;
+                          }
+                      }
+                      // Check if correct is still true
+                      if(correct == 1) {
+                          // WIN
+                          console.log("WIN");
+                      }
+                      else {
+                          // Compare remaining guesses
+                          console.log("Not this time");
+                      }
+
+                  }
+                  else {
+                      console.log("spaces still exist");
+                      //console.log(cm_guess[0]+", "+cm_guess[1]+", "+cm_guess[2]+", "+cm_guess[3]);
+                  }
+              }
+          }
       }
-    }
   }
 
-
+  
   // Store last clicked
   clicked_last = clicked;
 }
