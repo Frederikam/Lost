@@ -1,6 +1,7 @@
 import main from '../main.js'
 import dialogue from '../ui/dialogue.js'
-import audio from "../audio";
+import audio from "../audio"
+import stage2 from "../stage2/stage2.js"
 
 const module = {};
 
@@ -30,7 +31,7 @@ module.run = function () {
   dialogue.setText("[Sumireko was in her everyday boring life, looking for ways to go back to Gensōkyō." +
     " One night, she was visiting a Shrine when she found an old handmade journal.]");
 
-  let background = new createjs.Bitmap("assets/images/stage1/prologue.jpg");
+  background = new createjs.Bitmap("assets/images/stage1/prologue.jpg");
   background.alpha = 0;
   main.background.addChild(background);
   createjs.Tween.get(background)
@@ -178,6 +179,8 @@ module.begin = function() {
       i++;
     }
   }
+
+  //onComplete(); // For testing
 };
 
 // Local coordinates
@@ -324,6 +327,8 @@ function onComplete() {
 
   dialogue.actorRight.speak('Reisen: "It looks like you won… (And I’ll get Tewi later for this!!)"');
 
+  audio.setMusic("menu");
+
   const timeline = [
     () => {
       dialogue.actorLeft.speak('Sumireko: "Now please show me the exit."');
@@ -340,7 +345,14 @@ function onComplete() {
       dialogue.setText('[The journal started glowing again as if to nod.]');
     }, () => {
       dialogue.setVisible(false);
-      // TODO: Go to next stage
+      dialogue.actorLeft.setVisible(false, 300);
+      dialogue.setAutoStep(false);
+      createjs.Tween.get(background)
+        .to({alpha: 0}, 1000)
+        .call(() => {
+          main.background.removeChild(background);
+          stage2.run();
+        });
     }
   ];
 
