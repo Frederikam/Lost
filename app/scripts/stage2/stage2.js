@@ -40,14 +40,13 @@ module.run = function() {
     () => {
       dialogue.actorLeft.speak('Sumireko: "What the hell is wrong with Gensōkyō?! (I know I can fly, but this is a strange phenomenon anyways…)"')
     }, () => {
-      dialogue.setText('Unknown Voice: "Well, duh! It’s Gensōkyō, you idiot!"')
+      dialogue.setText('Unknown: "Well, duh! It’s Gensōkyō, you idiot!"')
     }, () => {
       dialogue.actorLeft.speak('Sumireko: "Who’s there?!"');
     }, () => {
       dialogue.setText('[The voice speaks once more, appearing directly behind Sumireko.]')
-    }, () => {      
+    }, () => {
       dialogue.actorRight.speak('Seija: "I’m Seija and you’re in my domain, the Shining Needle Castle. I don’t see humans here very often… What are you doing in Gensōkyō, Miss Glasses?"');
-      dialogue.actorRight.setVisible(true, 500);
     }, () => {
       dialogue.actorLeft.speak('Sumireko: "I’m Sumireko and I don’t like heights. So if you could please help me down in some way…"');
     }, () => {
