@@ -17,9 +17,8 @@ module.setMusic = function(id) {
   if (currentMusicId === id) return;
 
   const fadeIn = () => {
-    currentMusic = createjs.Sound.play(id);
+    currentMusic = createjs.Sound.play(id, {loop:-1});
     currentMusic.volume = 0;
-    currentMusic.setLoop(true);
     createjs.Tween.get(currentMusic)
       .to({volume: 0.5}, 10000, createjs.Ease.sineInOut(2))
   };

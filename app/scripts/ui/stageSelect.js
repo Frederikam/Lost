@@ -9,6 +9,7 @@ const module = {};
 const stages = [stage1, stage2, stage3];
 let stageSelected = false;
 const buttons = [];
+const text = [];
 const buttonLabels = ['Stage 1', 'Stage 2', 'Stage 3'];
 
 let stageBackground = null;
@@ -19,19 +20,20 @@ module.run = function() {
 
   for (let i = 0; i < 3; i++) {
     const buttonXPosition = canvas.width/2 - 258
-    const buttonYPosition = 300 + i*150;    
+    const buttonYPosition = 300 + i*150;
     const button = new createjs.Shape();
 
     let buttonText = new createjs.Text(buttonLabels[i], "40px Arial", "#FFF");
     buttonText.x = buttonXPosition + 190;
     buttonText.y = buttonYPosition + 20;
-    
+
     //TODO: Art
     button.graphics.beginFill('brown').drawRoundRect(buttonXPosition, buttonYPosition, 512, 94, 5);
 
     main.ui.addChild(button);
     main.ui.addChild(buttonText);
     buttons.push(button);
+    text.push(buttonText);
 
     button.addEventListener("mousedown", function(event) {
       if (stageSelected) return; // Debounce
@@ -75,6 +77,9 @@ function onSelect(stageId) {
   buttons.forEach(button => {
     createjs.Tween.get(button)
       .to({y: button.y + 25}, 500);
+  });
+
+  text.forEach(buttonText => {
     createjs.Tween.get(buttonText)
       .to({y: buttonText.y + 25}, 500);
   });
