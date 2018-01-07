@@ -14,14 +14,14 @@ var piece_startx = 600;
 var piece_starty = 180;
 var slider_solved; // Prevents further interaction with puzzle and starts end sequence
 
-module.background = "assets/images/menu_bg.jpg";
+//module.background = "assets/images/menu_bg.jpg";
 
 let background;
 
 let sliderContainer = new createjs.Container();
 
 // Menu assets
-var slider_bg =       new createjs.Bitmap("assets/images/menu_bg.jpg");
+var slider_bg =       new createjs.Bitmap("assets/images/stage2/castle.png");
 var slider_board =    new createjs.Bitmap("assets/images/slider/board.png");
 var slider_congrats = new createjs.Bitmap("assets/images/slider/congrats.png");
 
@@ -36,7 +36,7 @@ module.run = function() {
   dialogue.setVisible(true);
   dialogue.setText("[Sumireko had just left the Bamboo Forest when suddenly she started falling… into the sky?]");
 
-  background = new createjs.Bitmap("assets/images/stage1/prologue.jpg");
+  background = new createjs.Bitmap("assets/images/stage2/castle.png");
   background.alpha = 0;
   main.background.addChild(background);
   createjs.Tween.get(background)
