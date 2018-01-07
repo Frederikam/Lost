@@ -16,6 +16,8 @@ var slider_solved; // Prevents further interaction with puzzle and starts end se
 
 module.background = "assets/images/menu_bg.jpg";
 
+let background;
+
 let sliderContainer = new createjs.Container();
 
 // Menu assets
@@ -34,7 +36,7 @@ module.run = function() {
   dialogue.setVisible(true);
   dialogue.setText("[Sumireko had just left the Bamboo Forest when suddenly she started falling… into the sky?]");
 
-  let background = new createjs.Bitmap("assets/images/stage1/prologue.jpg");
+  background = new createjs.Bitmap("assets/images/stage1/prologue.jpg");
   background.alpha = 0;
   main.background.addChild(background);
   createjs.Tween.get(background)
