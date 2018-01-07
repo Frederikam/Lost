@@ -17,9 +17,9 @@ module.run = function () {
 	var slidersContainer = new createjs.Container();
 
 	var sliders = [
-		new Slider({x: 706, y: 0}, 500, "vertical"),
-		new Slider({x: 776, y: 0}, 500, "vertical"),
-		new Slider({x: 846, y: 0}, 500, "vertical"),
+		new Slider({x: 706, y: 192}, 200, "vertical"),
+		new Slider({x: 776, y: 192}, 400, "vertical"),
+		new Slider({x: 846, y: 192}, 600, "vertical"),
 		new Slider({x: 706, y: 195}, 200, "horizontal"),
 		new Slider({x: 776, y: 265}, 200, "horizontal"),
 		new Slider({x: 846, y: 335}, 200, "horizontal")
@@ -27,19 +27,24 @@ module.run = function () {
 
 	sliders.forEach(function(slider) {
 		slidersContainer.addChild(slider.displayObject);
+
+		slider.displayObject.on("pressup", function(event) {
+			console.log(event);
+		});
+
 		slider.displayObject.on("pressmove", function(event) {
-			console.log(slider);
+			//console.log(slider);
 			//event.target.x = event.stageX;
 			if(slider.orientation === "vertical") {
-				if(event.stageY > 100 && event.stageY < 700) {
+				if(event.stageY > 192 && event.stageY < 1050 - slider.length) {
 					event.target.y = event.stageY;
 				}
 			}
 			
 			if(slider.orientation === "horizontal") {
-				//if(event.stageX > 100 && event.stageX < 700) {
+				if(event.stageX > 494 && event.stageX < 1400 - slider.length) {
 					event.target.x = event.stageX;
-				//}
+				}
 			}			
 			stage.update();
 		});
