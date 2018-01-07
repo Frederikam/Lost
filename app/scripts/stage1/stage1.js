@@ -107,8 +107,17 @@ module.run = function () {
     }, () => {
       dialogue.actorLeft.speak('Sumireko: "I was not chasing them! I followed them to find an exit, until I ran into you!"');
     }, () => {
+      dialogue.actorRight.speak('Reisen: "You’re deep inside the Bamboo Forest and chasing the rabbits, I’ll stop you from going any further!"');
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "I’m not looking for a fight here, but you’re asking for it! Get ready!"');
+    }, () => {
+      dialogue.actorRight.speak('Reisen: "Since you don’t look so threatening, let’s see if you can solve this super complex puzzle. I’ve spent nights working on it!"');
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "Bring it on!"');
+    }, () => {
       dialogue.setAutoStep(false);
       dialogue.actorLeft.setVisible(false, 300);
+      dialogue.actorRight.setVisible(false, 300);
       dialogue.setText('Drag and drop puzzle pieces to solve the puzzle. Use the right mouse button to rotate.');
       setTimeout(module.begin, 500);
     }
@@ -280,21 +289,6 @@ function isComplete() {
   return true;
 }
 
-function onComplete() {
-  if (ended) return; // Debounce
-  ended = true;
-  console.log("Completed!");
-
-  // TODO: Dialogue
-
-  createjs.Tween.get(mapContainer)
-    .to({y: mapContainer.y + 50, alpha: 0}, 1000)
-    .call(function() {
-      main.foreground.removeChild(mapContainer);
-    })
-
-}
-
 // Copy paste driven development
 // https://goo.gl/pudmnX
 function shuffle(array) {
@@ -315,6 +309,21 @@ function shuffle(array) {
   }
 
   return array;
+}
+
+function onComplete() {
+  if (ended) return; // Debounce
+  ended = true;
+  console.log("Completed!");
+
+  // TODO: Dialogue
+
+  createjs.Tween.get(mapContainer)
+    .to({y: mapContainer.y + 50, alpha: 0}, 1000)
+    .call(function() {
+      main.foreground.removeChild(mapContainer);
+    })
+
 }
 
 export default module;
