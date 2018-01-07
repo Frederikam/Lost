@@ -88,7 +88,7 @@ module.run = function() {
       dialogue.setAutoStep(false);
       dialogue.actorLeft.setVisible(false, 300);
       dialogue.actorRight.setVisible(false, 300);
-      dialogue.setText('Drag and drop puzzle pieces to solve the puzzle. Use the right mouse button to rotate.');
+      dialogue.setVisible(false);
       setTimeout(module.begin, 500);
     }
   ];
@@ -99,7 +99,7 @@ module.run = function() {
 
 module.begin = function() {
   var data = {
-    images: ["assets/images/stage2/nue_puzzle.png"],
+    images: ["assets/images/nue_puzzle.jpg"],
     frames: {width:180, height: 180, regX: 90, regY: 90},
     animations: {
       "0": 0,
