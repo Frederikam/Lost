@@ -1,40 +1,103 @@
 import main from '../main.js'
+import Actor from './Actor.js'
 
 const module = {};
 
-const commonY = 620;
+const boxAlpha = 0.7;
+const boxWidth = 1000;
 
 let dialogueBox;
 let dialogueText;
+const spritesheet = new createjs.SpriteSheet({
+  images: ["assets/images/slider/full.png"], //TODO: Replace placeholder
+  frames: {width: 300, height: 400},
+});
 
 module.onLoad = function() {
-  main.dialogue.alpha = 0;
   dialogueBox = new createjs.Shape();
-  dialogueBox.graphics.beginFill('black').drawRect(200, 850, 1520, 200);
-  dialogueBox.alpha = 0.7;
+  dialogueBox.graphics.beginFill('black').drawRect(0, 850, boxWidth, 200);
+  dialogueBox.x = (1920-boxWidth)/2;
+  dialogueBox.width = boxWidth;
+  dialogueBox.alpha = 0;
   main.dialogue.addChild(dialogueBox);
 
   const textMargin = 40;
   dialogueText = new createjs.Text("Tempora est dolor quisquam labore labore dignissimos. Non quam quisquam adipisci eligendi aut consequatur et. Nemo magni laudantium necessitatibus perferendis nulla unde." +
     "\n", "40px Arial", "#FFF");
-  dialogueText.x = 200 + textMargin;
+  dialogueText.x = dialogueBox.x + textMargin;
   dialogueText.y = 850 + textMargin;
-  dialogueText.lineWidth = 1520 - textMargin * 2;
+  dialogueText.alpha = 0;
+  dialogueText.lineWidth = boxWidth - textMargin * 2;
+  module.text = dialogueText;
   main.dialogue.addChild(dialogueText);
 
-  module.actorLeft = new createjs.Bitmap("https://en.touhouwiki.net/images/8/8e/Th10Reimu2.png");
-  module.actorLeft.y = commonY;
-  module.actorLeft.x = -20;
-  module.actorLeft.scaleX = 1.5;
-  module.actorLeft.scaleY = 1.5;
-  main.dialogue.addChild(module.actorLeft);
-
-  module.actorRight = new createjs.Bitmap("https://en.touhouwiki.net/images/e/e9/14Tenshi2.png");
-  module.actorRight.y = commonY;
-  module.actorRight.x = 2000;
-  module.actorRight.scaleX = -1;
-  module.actorRight.scaleY = 1;
-  main.dialogue.addChild(module.actorRight);
+  // TODO: Symmetry
+  module.actorLeft = new Actor(spritesheet, dialogueBox.x - 320, true);
+  module.actorRight = new Actor(spritesheet, dialogueBox.x + dialogueBox.width, false);
+  module.actors = [module.actorLeft, module.actorRight];
 };
+
+let timeline = [];
+let step = -1;
+
+module.setTimeline = function(t) {
+  timeline = t;
+  step = -1;
+};
+
+module.step = function() {
+  step++;
+  timeline[step]();
+};
+
+let visible = false;
+module.setVisible = function(bool) {
+  if (bool === visible) return;
+  visible = bool;
+
+  if (bool) {
+      createjs.Tween.get(dialogueBox).to({alpha: boxAlpha}, 300);
+      createjs.Tween.get(dialogueText).to({alpha: 1}, 300);
+  } else {
+    createjs.Tween.get(dialogueBox).to({alpha: 0}, 300);
+    createjs.Tween.get(dialogueText).to({alpha: 0}, 300);
+  }
+};
+
+// Dialogue example
+/*
+setTimeout(temp, 5000);
+let clickListener = () => dialogue.step();
+function temp() {
+  dialogue.actorLeft.setFrame(0);
+  dialogue.actorLeft.setFrame(1);
+  dialogue.setVisible(true);
+
+  dialogue.actorRight.speak("Knock knock");
+  let timeline = [
+    () => {
+      dialogue.actorLeft.speak("Who's there?");
+    },
+    () => {
+      dialogue.actorRight.speak("Nobel");
+    },
+    () => {
+      dialogue.actorLeft.speak("Nobel who?");
+    },
+    () => {
+      dialogue.actorRight.speak("No bell, that's why I knocked!");
+    },
+    () => {
+      dialogue.setVisible(false);
+      dialogue.actorLeft.setVisible(false, 300);
+      dialogue.actorRight.setVisible(false, 300);
+      document.getElementById("game").removeEventListener("click", clickListener)
+    },
+  ];
+
+  dialogue.setTimeline(timeline);
+  document.getElementById("game").addEventListener("click", clickListener);
+}
+*/
 
 export default module;
