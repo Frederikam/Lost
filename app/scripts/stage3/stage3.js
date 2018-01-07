@@ -18,7 +18,7 @@ var cm_thumb_id = []; // Stores IDs of color thumbnails
 
 // Selection pieces
 var red, yellow, green, blue, purple, white;
-var r_img, y_img, g_img, b_img, p_img, w_img;
+var cm_image = []; // Stores bitmaps for main color piece placement in blank spaces
 
 module.run = function () {
   /* Dialogue */
@@ -82,134 +82,139 @@ module.begin = function() {
 
   // Menu assets
   var menu_bg = new createjs.Bitmap("assets/images/menu_bg.jpg");
-
-  // Puzzle assets
-  cm_piece.push(""); // 0
-  cm_piece.push("assets/images/colormatch/red.png"); // 1
-  cm_piece.push("assets/images/colormatch/yellow.png"); // 2
-  cm_piece.push("assets/images/colormatch/green.png"); // 3
-  cm_piece.push("assets/images/colormatch/blue.png"); // 4
-  cm_piece.push("assets/images/colormatch/purple.png"); // 5
-  cm_piece.push("assets/images/colormatch/white.png"); // 6
-
-  cm_piece.push("assets/images/colormatch/correct.png"); // 7
-  cm_piece.push("assets/images/colormatch/incorrect.png"); // 8
-  cm_piece.push("assets/images/colormatch/correct_icon.png"); // 9
-  cm_piece.push("assets/images/colormatch/incorrect_icon.png"); // 10
-  cm_piece.push("assets/images/colormatch/space.png"); // 11
-
-  // Container coordinates
-
-  // Add assets to stage
-  main.background.addChild(menu_bg);
-
-  // Populate past guess table
-  // Rows for past guesses
-  for(var i=0;i<4;i++) {
-    var startx = 600;
-    var starty = 50;
-    // Columns for past guesses
-    for(var j=0;j<3;j++) {
-      cm_past_guess_container[i][j] = new createjs.Bitmap(cm_piece[4]);
-      cm_past_guess_container[i][j].x = (startx+(i*150));
-      cm_past_guess_container[i][j].y = (starty+(j*130));
-      // Alpha
-      cm_past_guess_container[i][j].alpha = ((j+2)/5); // Gradually fade the earliest given answer out
-      cm_past_guess_container[i][j].width = 20;
-      cm_past_guess_container[i][j].height = 20;
-      //cm_past_guess[i][j] = 0;
-      main.foreground.addChild(cm_past_guess_container[i][j]);
-    }
-  }
-
-  // Populate past results table
-  // Rows for past results
-  for(var i=0;i<4;i++) {
-    var startx = 1180;
-    var starty = 70;
-    // Columns for past guesses
-    for(var j=0;j<3;j++) {
-      cm_past_guess_container[i][j] = new createjs.Bitmap(cm_piece[10]);
-      if(i<2) {
-        cm_past_guess_container[i][j].x = (startx+(i*25));
-        cm_past_guess_container[i][j].y = (starty+(j*130));
+  
+      // Puzzle assets
+      cm_piece.push(""); // 0
+      cm_piece.push("assets/images/colormatch/red.png"); // 1
+      cm_piece.push("assets/images/colormatch/yellow.png"); // 2
+      cm_piece.push("assets/images/colormatch/green.png"); // 3
+      cm_piece.push("assets/images/colormatch/blue.png"); // 4
+      cm_piece.push("assets/images/colormatch/purple.png"); // 5
+      cm_piece.push("assets/images/colormatch/white.png"); // 6
+  
+      cm_piece.push("assets/images/colormatch/correct.png"); // 7
+      cm_piece.push("assets/images/colormatch/incorrect.png"); // 8
+      cm_piece.push("assets/images/colormatch/correct_icon.png"); // 9
+      cm_piece.push("assets/images/colormatch/incorrect_icon.png"); // 10
+      cm_piece.push("assets/images/colormatch/space.png"); // 11
+  
+      // Container coordinates
+  
+      // Add assets to stage
+      stage.addChild(menu_bg);
+      
+      // Populate past guess table
+      // Rows for past guesses
+      for(var i=0;i<4;i++) {
+          var startx = 600;
+          var starty = 50;
+          // Columns for past guesses
+          for(var j=0;j<3;j++) {
+              cm_past_guess_container[i][j] = new createjs.Bitmap(cm_piece[4]);
+              cm_past_guess_container[i][j].x = (startx+(i*150));
+              cm_past_guess_container[i][j].y = (starty+(j*130));
+              // Alpha
+              cm_past_guess_container[i][j].alpha = ((j+2)/5); // Gradually fade the earliest given answer out
+              cm_past_guess_container[i][j].width = 20;
+              cm_past_guess_container[i][j].height = 20;
+              //cm_past_guess[i][j] = 0;
+              stage.addChild(cm_past_guess_container[i][j]);
+          }
       }
-      else {
-        cm_past_guess_container[i][j].x = (startx+((i-2)*25));
-        cm_past_guess_container[i][j].y = (starty+30+(j*130));
+  
+      // Populate past results table
+      // Rows for past results
+      for(var i=0;i<4;i++) {
+          var startx = 1180;
+          var starty = 70;
+          // Columns for past guesses
+          for(var j=0;j<3;j++) {
+              cm_past_guess_container[i][j] = new createjs.Bitmap(cm_piece[10]);
+              if(i<2) {
+                  cm_past_guess_container[i][j].x = (startx+(i*25));
+                  cm_past_guess_container[i][j].y = (starty+(j*130));
+              }
+              else {
+                  cm_past_guess_container[i][j].x = (startx+((i-2)*25));
+                  cm_past_guess_container[i][j].y = (starty+30+(j*130));
+              }
+              // Alpha
+              cm_past_guess_container[i][j].alpha = ((j+2)/5);
+              cm_past_guess_container[i][j].width = 20;
+              cm_past_guess_container[i][j].height = 20;
+              //cm_past_guess[i][j] = 0;
+              stage.addChild(cm_past_guess_container[i][j]);
+          }
       }
-      // Alpha
-      cm_past_guess_container[i][j].alpha = ((j+2)/5);
-      cm_past_guess_container[i][j].width = 20;
-      cm_past_guess_container[i][j].height = 20;
-      //cm_past_guess[i][j] = 0;
-      main.foreground.addChild(cm_past_guess_container[i][j]);
-    }
-  }
-
-  // Draw empty circles for piece placement
-  for(var i=0;i<4;i++) {
-    var startx = 550;
-    var starty = 550;
-
-    cm_spaces[i] = new createjs.Bitmap(cm_piece[11]);
-    cm_spaces[i].x = (startx + (200*i));
-    cm_spaces[i].y = starty;
-
-    main.foreground.addChild(cm_spaces[i]);
-
-    cm_spaces[i].addEventListener("click", handleMouseEvent);
-
-    cm_space_id.push(cm_spaces[i].id);
-    //console.log(cm_space_id[i]);
-  }
-
-  // Draw selection pieces (invisible)
-  // Red -
-  red = new createjs.Shape();
-  red.graphics.beginFill("red").drawCircle(0,0,20);
-  red.alpha = 0;
-  main.foreground.addChild(red);
-  cm_thumb_id[0] = red.id;
-  red.addEventListener("click", handleMouseEvent);
-  // Yellow - 2
-  yellow = new createjs.Shape();
-  yellow.graphics.beginFill("yellow").drawCircle(0,0,20);
-  yellow.alpha = 0;
-  main.foreground.addChild(yellow);
-  cm_thumb_id[1] = yellow.id;
-  yellow.addEventListener("click", handleMouseEvent);
-  // Green - 3
-  green = new createjs.Shape();
-  green.graphics.beginFill("green").drawCircle(0,0,20);
-  green.alpha = 0;
-  main.foreground.addChild(green);
-  cm_thumb_id[2] = green.id;
-  green.addEventListener("click", handleMouseEvent);
-  // Blue - 4
-  blue = new createjs.Shape();
-  blue.graphics.beginFill("blue").drawCircle(0,0,20);
-  blue.alpha = 0;
-  main.foreground.addChild(blue);
-  cm_thumb_id[3] = blue.id;
-  blue.addEventListener("click", handleMouseEvent);
-  // Purple - 5
-  purple = new createjs.Shape();
-  purple.graphics.beginFill("purple").drawCircle(0,0,20);
-  purple.alpha = 0;
-  main.foreground.addChild(purple);
-  cm_thumb_id[4] = purple.id;
-  purple.addEventListener("click", handleMouseEvent);
-  // White - 6
-  white = new createjs.Shape();
-  white.graphics.beginFill("white").drawCircle(0,0,20);
-  white.alpha = 0;
-  main.foreground.addChild(white);
-  cm_thumb_id[5] = white.id;
-  white.addEventListener("click", handleMouseEvent);
-
-  // Populate images for pieces
-  r_img = new createjs.Bitmap
+  
+      // Draw empty circles for piece placement
+      for(var i=0;i<4;i++) {
+          var startx = 550;
+          var starty = 550;
+  
+          cm_spaces[i] = new createjs.Bitmap(cm_piece[11]);
+          cm_spaces[i].x = (startx + (200*i));
+          cm_spaces[i].y = starty;
+  
+          stage.addChild(cm_spaces[i]);
+  
+          cm_spaces[i].addEventListener("click", handleMouseEvent);
+  
+          cm_space_id.push(cm_spaces[i].id);
+          //console.log(cm_space_id[i]);
+      }
+  
+      // Draw selection pieces (invisible)
+      // Red - 
+      red = new createjs.Shape();
+      red.graphics.beginFill("red").drawCircle(0,0,20);
+      red.alpha = 0;
+      stage.addChild(red);
+      cm_thumb_id[0] = red.id;
+      red.addEventListener("click", handleMouseEvent);
+      // Yellow - 2
+      yellow = new createjs.Shape();
+      yellow.graphics.beginFill("yellow").drawCircle(0,0,20);
+      yellow.alpha = 0;
+      stage.addChild(yellow);
+      cm_thumb_id[1] = yellow.id;
+      yellow.addEventListener("click", handleMouseEvent);
+      // Green - 3
+      green = new createjs.Shape();
+      green.graphics.beginFill("green").drawCircle(0,0,20);
+      green.alpha = 0;
+      stage.addChild(green);
+      cm_thumb_id[2] = green.id;
+      green.addEventListener("click", handleMouseEvent);
+      // Blue - 4
+      blue = new createjs.Shape();
+      blue.graphics.beginFill("blue").drawCircle(0,0,20);
+      blue.alpha = 0;
+      stage.addChild(blue);
+      cm_thumb_id[3] = blue.id;
+      blue.addEventListener("click", handleMouseEvent);
+      // Purple - 5
+      purple = new createjs.Shape();
+      purple.graphics.beginFill("purple").drawCircle(0,0,20);
+      purple.alpha = 0;
+      stage.addChild(purple);
+      cm_thumb_id[4] = purple.id;
+      purple.addEventListener("click", handleMouseEvent);
+      // White - 6
+      white = new createjs.Shape();
+      white.graphics.beginFill("white").drawCircle(0,0,20);
+      white.alpha = 0;
+      stage.addChild(white);
+      cm_thumb_id[5] = white.id;
+      white.addEventListener("click", handleMouseEvent);
+  
+      // Populate images for pieces
+      cm_image.push(new createjs.Bitmap(cm_piece[1]));
+      cm_image.push(new createjs.Bitmap(cm_piece[2]));
+      cm_image.push(new createjs.Bitmap(cm_piece[3]));
+      cm_image.push(new createjs.Bitmap(cm_piece[4]));
+      cm_image.push(new createjs.Bitmap(cm_piece[5]));
+      cm_image.push(new createjs.Bitmap(cm_piece[6]));
 };
 
 
@@ -266,16 +271,16 @@ function handleMouseEvent(event) {
 
   // Find out if a thumbnail was clicked
   for(var i=0;i<6;i++) {
-    if(cm_thumb_id[i] === event.target.id) {
+    if(cm_thumb_id[i] == event.target.id) {
       // i cooresponds to color
       // i = 0 = red / cm_piece[1] = red (add 1 to i)
-      var colornum = (i+1);
+      var colornum = i;
 
       for(var j=0;j<4;j++) {
-        if(cm_space_id[j] === clicked_last) {
-          // Store selected color in last clicked space
-          cm_spaces[j].image = cm_piece[colornum];
-          console.log(cm_spaces[j]+": "+colornum);
+        if(cm_space_id[j] == clicked_last) {
+            // Store selected color in last clicked space
+            cm_spaces[j].image = cm_image[colornum].image;
+            console.log(cm_spaces[j]+": "+colornum);
         }
       }
     }
