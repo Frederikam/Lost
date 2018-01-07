@@ -1,7 +1,7 @@
 import dialogue from "./dialogue";
 import main from "../main";
 
-const commonY = 650;
+const commonY = 470;
 const inactiveAlpha = 0.8;
 
 class Actor {
@@ -15,6 +15,8 @@ class Actor {
     this.entity.alpha = 0;
     this.visible = false;
     this.active = false;
+    this.entity.scaleX = 1.5;
+    this.entity.scaleY = 1.5;
 
     main.dialogue.addChild(this.entity);
   }
