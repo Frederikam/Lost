@@ -48,7 +48,7 @@ function onSelect(stageId) {
     .wait(200)
     .call(function () {
       createjs.Tween.get(mainMenu.background)
-        .to({alpha: 0}, 2000);
+        .to({alpha: 0}, 1000);
 
       // Stage background
       if (stages[stageId].background !== undefined) {

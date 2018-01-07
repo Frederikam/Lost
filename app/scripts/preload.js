@@ -10,8 +10,11 @@ const manifestRaw = [
   "assets/images/menu_credits.png",
   "assets/images/slider/board.png",
   "assets/images/slider/full.png",
+  "assets/images/stage1/background1.jpg",
+  "assets/images/stage1/map.png",
   "assets/audio/menu.ogg",
-  "assets/audio/puzzle.ogg"
+  "assets/audio/puzzle.ogg",
+  "assets/images/stage1/prologue.jpg"
 ];
 
 const queue = new createjs.LoadQueue();

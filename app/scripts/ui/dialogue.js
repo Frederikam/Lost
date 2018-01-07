@@ -21,7 +21,7 @@ module.onLoad = function() {
   dialogueBox.alpha = 0;
   main.dialogue.addChild(dialogueBox);
 
-  const textMargin = 40;
+  const textMargin = 30;
   dialogueText = new createjs.Text("Tempora est dolor quisquam labore labore dignissimos. Non quam quisquam adipisci eligendi aut consequatur et. Nemo magni laudantium necessitatibus perferendis nulla unde." +
     "\n", "40px Arial", "#FFF");
   dialogueText.x = dialogueBox.x + textMargin;

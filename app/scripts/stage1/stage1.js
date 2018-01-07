@@ -11,11 +11,13 @@ const spritesheet = new createjs.SpriteSheet({
   frames: {width: imgWidth / rows, height: imgWidth / rows, regX: imgWidth / rows / 2, regY: imgWidth / rows / 2},
 });
 
-//module.background = "assets/images/stage1/background1.jpg";
+//module.background = "assets/images/stage1/prologue.jpg";
 
 const pieces = [];
 let mapContainer;
 let ended = false;
+
+let background = null;
 
 module.run = function () {
   /* Dialogue */
@@ -23,20 +25,61 @@ module.run = function () {
   dialogue.actorLeft.setActive(false, 500);
   dialogue.actorRight.setVisible(false, 0);
   dialogue.setVisible(true);
-  dialogue.setText("[Sumireko was in her everyday boring life, looking for ways to go back to Gensoukyou." +
+  dialogue.setText("[Sumireko was in her everyday boring life, looking for ways to go back to Gensōkyō." +
     " One night, she was visiting a Shrine when she found an old handmade journal.]");
+
+  let background = new createjs.Bitmap("assets/images/stage1/prologue.jpg");
+  background.alpha = 0;
+  main.background.addChild(background);
+  createjs.Tween.get(background)
+    .to({alpha: 1}, 1000);
 
   const timeline = [
     () => {
       dialogue.actorLeft.speak('Sumireko: "Hm? What’s with this old journal?"')
-    },
-    () => {
+    }, () => {
       dialogue.setText('[Sumireko opened the journal to look on the inside.]')
-    },
-    () => {
+    }, () => {
       dialogue.actorLeft.speak('Sumireko: "Spell cards? And several pages are missing. Someone must have ripped them off for a reason…"');
-    },
-    () => {
+    }, () => {
+      dialogue.setText('[As the girl flipped through the pages, the journal started emitting a strong blinding light.]')
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "What the hell?! Waaaah!!"');
+      createjs.Tween.get(main.background)
+        .to({alpha: 0}, 1000);
+    }, () => {
+      dialogue.setText('[Sumireko is asleep on the floor. She slowly awoke in response to birds chirping and the morning sunlight.]')
+    }, () => {
+      dialogue.setText('[After picking her glasses up from the floor, she looks around to see an endless bamboo grove.]');
+      // Remove old bg
+      main.background.removeChild(background);
+
+      background = new createjs.Bitmap("assets/images/stage1/background1.jpg");
+      main.background.alpha = 0;
+      main.background.addChild(background);
+      createjs.Tween.get(main.background)
+        .to({alpha: 1}, 1000)
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "Is this… Gensōkyō?"');
+    }, () => {
+      dialogue.setText('[Sumireko noticed the journal opened on the ground and picked it up to take another look.]')
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "Not a single note in this book?"');
+    }, () => {
+      dialogue.setText('[She sighed and stood back up again. It was time for another adventure!]')
+    }, () => {
+      dialogue.setText('[...]');
+      createjs.Tween.get(main.background)
+        .to({alpha: 0}, 500)
+    }, () => {
+      dialogue.setText('[......]')
+    }, () => {
+      dialogue.setText('[.........]')
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "I’ve had enough! I’ve been walking for three hours in a single direction and it’s the same broken bamboo again!"');
+      createjs.Tween.get(main.background)
+        .to({alpha: 1}, 500)
+    }, () => {
       dialogue.setAutoStep(false);
       dialogue.actorLeft.setVisible(false, 300);
       dialogue.setText('Drag and drop puzzle pieces to solve the puzzle. Use the right mouse button to rotate.');
@@ -53,7 +96,7 @@ module.begin = function() {
   ended = false;
   mapContainer = new createjs.Container();
   mapContainer.x = 1920 / 2;
-  mapContainer.y = 1080 / 2;
+  mapContainer.y = 450;
   mapContainer.regX = imgWidth / 2;
   mapContainer.regY = imgWidth / 2;
   main.foreground.addChild(mapContainer);
