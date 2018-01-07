@@ -28,8 +28,8 @@ module.run = function () {
   dialogue.actorRight.setVisible(false, 0);
   dialogue.actorRight.setFrame(dialogue.reisen);
   dialogue.setVisible(true);
-  dialogue.setText("[Sumireko was in her everyday boring life, looking for ways to go back to Gensōkyō." +
-    " One night, she was visiting a Shrine when she found an old handmade journal.]");
+  dialogue.setText("[ This was just another day in Sumireko's boring life spent looking for ways to go back to Gensōkyō. " +
+    "One night, upon visiting a Shrine, she found an old, handmade journal. ]");
 
   background = new createjs.Bitmap("assets/images/stage1/prologue.jpg");
   background.alpha = 0;
@@ -90,11 +90,11 @@ module.run = function () {
     }, () => {
       dialogue.setText('[She pointed her phone to the broken bamboo and…]')
     }, () => {
-      dialogue.actorLeft.speak('Sumireko: "Hm? A rabbit behind the bamboos?"');
+      dialogue.actorLeft.speak('Sumireko: "Hm? A rabbit in the bamboo?"');
     }, () => {
       dialogue.setText('[She raised her head and saw a small group of white rabbits.]')
     }, () => {
-      dialogue.setText('[They suddenly got scared when she noticed them, and Sumireko started running towards it.]')
+      dialogue.setText('[Sumireko ran towards the rabbits. Frightened, they begin to flee.]')
     }, () => {
       dialogue.actorLeft.speak('Sumireko: "If I can’t find a way out by myself, at least I could use some help from these rabbits!"');
     }, () => {
