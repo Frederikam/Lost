@@ -66,6 +66,18 @@ module.run = function () {
     }, () => {
       dialogue.setText('[Shinmyoumaru stopped for a moment to think, and meanwhile Sumireko opened the journal to find more instructions.]')
     }, () => {
+      dialogue.setText('[Written in the book is "Think of a way to make the inchling use the Miracle Mallet in the book"]')
+    }, () => {
+      dialogue.actorRight.speak('Shinmyoumaru: "Yes, I’m its former owner. The Miracle Mallet is a tool you could use to increase the size of things and grant a wish of the user.')
+    }, () => {
+      dialogue.actorRight.speak('Shinmyoumaru: "It must be charged before using it. We inchlings are the only ones who can activate its true power.')
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "If it increases the size of things, can it also increase the quantity?"')
+    }, () => {
+      dialogue.actorRight.speak('Shinmyoumaru: "Hm? Quantity… I don’t know. I’ve never tried that before…')
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "See this journal here, many pages are still missing and I’d like to have more pages to write on."')
+    }, () => {
       dialogue.setAutoStep(false);
       dialogue.actorLeft.setVisible(false, 300);
       dialogue.actorRight.setVisible(false, 300);
