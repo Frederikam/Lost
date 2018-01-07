@@ -1,5 +1,6 @@
 import main from "../main.js"
 import stageSelect from "./stageSelect.js"
+import dialogue from "./dialogue";
 
 const module = {};
 
@@ -141,5 +142,92 @@ module.run = function() {
       .to({alpha: 0}, 250, createjs.Ease.getPowInOut(2));
   });
 };
+
+/* TEMP */
+setTimeout(() => {
+  dialogue.actorLeft.setFrame(dialogue.sumireko);
+  dialogue.actorRight.setFrame(dialogue.nue);
+  dialogue.setVisible(true);
+  dialogue.actorRight.speak('Nue: "No way! I lost my own game!"');
+
+  dialogue.setVisible(true);
+
+  const timeline = [
+    () => {
+      dialogue.actorLeft.speak('Sumireko: "I’m tired now and I wanna go home… No more fighting with Gensōkyō weirdos for today!"');
+    }, () => {
+      dialogue.setText("[A familiar voice came from outside the shrine.]");
+      dialogue.actorLeft.setVisible(false, 300)
+    }, () => {
+      dialogue.setText("Who’s there?! Shinmyoumaru?! Are you inside?!");
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "Oh crap! It’s that angry maiden from before! I gotta hide quickly and…!"');
+    }, () => {
+      dialogue.setText("[Sumireko felt a hand on her shoulder.]");
+    }, () => {
+      dialogue.actorRight.setFrame(dialogue.reimu);
+      dialogue.actorRight.speak('Reimu: "You gotta do what?"');
+    }, () => {
+      dialogue.setText("[Sumireko was fast to lay down and bow before the angry shrine maiden.]");
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "Sorry for the trouble! I just want to go home!"');
+    }, () => {
+      dialogue.actorRight.speak('Reimu: "Why do you have all these spell cards with you? You better start speaking…"');
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "I-I…"');
+    }, () => {
+      dialogue.actorLeft.setVisible(false, 300);
+      setTimeout(() => {
+        dialogue.actorLeft.setFrame(dialogue.shinmyoumaruMirrored);
+        dialogue.actorLeft.setVisible(true, 300);
+        dialogue.actorLeft.speak('Shinmyoumaru: "Wait Reimu! I can explain that!"');
+      }, 350);
+    }, () => {
+      dialogue.setText("[Reimu listened while the inchling explained what happened. Reimu sighed.]");
+    }, () => {
+      dialogue.actorRight.speak('Reimu: "I don’t know how the Akyuu’s Spell Card Register ended up in the Human World, but we’ll more careful now!"');
+    }, () => {
+      dialogue.actorRight.speak('Reimu: "As for you, Sumireko, I’ll be sending you home soon."');
+    }, () => {
+      dialogue.actorLeft.setVisible(false, 300);
+      setTimeout(() => {
+        dialogue.actorLeft.setFrame(dialogue.sumireko);
+        dialogue.actorLeft.setVisible(true, 300);
+        dialogue.actorLeft.speak('Sumireko: "Can I come back to Gensōkyō another day?"');
+      }, 350);
+    }, () => {
+      dialogue.actorRight.speak('Reimu: "Unfortunately not. We still don’t know how it was possible for you to come here in the first place."');
+    }, () => {
+      dialogue.actorRight.speak('Reimu: "I’m sorry, but we must check the barrier and make sure no outsiders get into Gensōkyō."');
+    }, () => {
+      dialogue.setText("[Sumireko sighed. Even though she knew what the answer would be, she had a small spark of hope inside.]");
+    }, () => {
+      dialogue.setText("[The girls went outside the shrine and Reimu cast a spell to open a portal.]");
+    }, () => {
+      dialogue.actorRight.setVisible(false, 500);
+      dialogue.setText("[Sumireko got into the portal and in a blink she was back to the shrine where her adventure had started.]");
+      createjs.Tween.get(main.background)
+        .to({alpha: 0}, 1000)
+        .call(() => {
+          main.background.removeAllChildren();
+          main.background.alpha = 1;
+          const background = new createjs.Bitmap("assets/images/stage1/prologue.jpg");
+          background.alpha = 0;
+          main.background.addChild(background);
+          createjs.Tween.get(background)
+            .to({alpha: 1}, 1000);
+        })
+    }, () => {
+      dialogue.actorLeft.speak('Sumireko: "It was a cool adventure, and even with all that trouble I got into, I want to go back someday… To Gensōkyō"');
+    }, () => {
+      dialogue.setText("The end");
+      dialogue.actorLeft.setVisible(false, 500);
+      dialogue.setAutoStep(false);
+    }
+  ];
+
+  dialogue.setTimeline(timeline);
+  dialogue.setAutoStep(true);
+}, 2000);
 
 export default module;

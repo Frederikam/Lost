@@ -9,6 +9,7 @@ module.seija = 2;
 module.shinmyoumaru = 3;
 module.nue = 4;
 module.reimu = 5;
+module.shinmyoumaruMirrored = 6;
 
 const boxAlpha = 0.7;
 const boxWidth = 1000;
