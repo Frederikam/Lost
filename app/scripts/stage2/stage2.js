@@ -1,6 +1,7 @@
 import main from "../main.js"
 import dialogue from '../ui/dialogue.js'
 import audio from "../audio";
+import stage3 from "../stage3/stage3.js"
 
 const module = {};
 
@@ -244,7 +245,7 @@ function onComplete() {
         .to({alpha: 0}, 1000)
         .call(() => {
           main.background.removeChild(background);
-          stage2.run();
+          stage3.run();
         });
     }
   ];

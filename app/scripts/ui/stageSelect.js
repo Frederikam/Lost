@@ -9,6 +9,7 @@ const module = {};
 const stages = [stage1, stage2, stage3];
 let stageSelected = false;
 const buttons = [];
+const buttonLabels = ['Stage 1', 'Stage 2', 'Stage 3'];
 
 let stageBackground = null;
 
@@ -17,11 +18,19 @@ module.run = function() {
   main.ui.alpha = 0;
 
   for (let i = 0; i < 3; i++) {
+    const buttonXPosition = canvas.width/2 - 258
+    const buttonYPosition = 300 + i*150;    
     const button = new createjs.Shape();
 
+    let buttonText = new createjs.Text(buttonLabels[i], "40px Arial", "#FFF");
+    buttonText.x = buttonXPosition + 190;
+    buttonText.y = buttonYPosition + 20;
+    
     //TODO: Art
-    button.graphics.beginFill('brown').drawRoundRect(canvas.width/2 - 258, 300 + i*150, 512, 94, 5);
+    button.graphics.beginFill('brown').drawRoundRect(buttonXPosition, buttonYPosition, 512, 94, 5);
+
     main.ui.addChild(button);
+    main.ui.addChild(buttonText);
     buttons.push(button);
 
     button.addEventListener("mousedown", function(event) {
