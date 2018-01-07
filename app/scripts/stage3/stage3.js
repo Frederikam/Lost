@@ -4,19 +4,21 @@ import dialogue from "../ui/dialogue";
 const module = {};
 
 // Variables
-var cm_past_guess_container = new Array(4);
+var cm_past_guess_container = new Array(3);
 for(var i=0;i<4;i++) {
   cm_past_guess_container[i] = new Array(4);
 }
 
 var cm_piece = []; // Stores values for pieces
-var cm_past_guess = [[0,0,0,0],[0,0,0,0],[0,0,0,0]]; // Stores values for past guesses
+var cm_past_guess = [[7,7,7,7],[7,7,7,7],[7,7,7,7]]; // Stores values for past guesses
+var cm_past_correct  = [[11,11,11,11],[11,11,11,11],[11,11,11,11]]; // Stores past correct/incorrect numbers
 var cm_spaces = []; // Empty space for player to place pieces for puzzle
 var cm_space_id = []; // Stores IDs for player-interactive spaces
 var clicked_last; // Stores id of the last clicked item
 var cm_thumb_id = []; // Stores IDs of color thumbnails
 var cm_answer = []; // Stores ran generated answer for player to guess
 var cm_guess = [7,7,7,7]; // Stores player guess
+var cm_pixel;
 
 // Selection pieces
 var red, yellow, green, blue, purple, white;
@@ -80,66 +82,11 @@ module.run = function () {
     }, () => {
       dialogue.actorLeft.speak('Sumireko: "See this journal here, many pages are still missing and I’d like to have more pages to write on."')
     }, () => {
-      dialogue.actorRight.speak('Shinmyoumaru: "Okay, hang on for a second! I’ll be right back!')
-    }, () => {
-      dialogue.actorRight.setVisible(false, 500)
-    }, () => {
-      dialogue.actorRight.setVisible(true, 500)
-    }, () => {
-      dialogue.actorRight.speak('Shinmyoumaru: "Put that journal over the table.')
-    }, () => {
-      dialogue.actorRight.speak('Shinmyoumaru: "The Miracle Mallet isn’t fully charged, but it should be enough to restore the pages, if it actually works.!')
-    }, () => {
-      dialogue.setText('[The Miracle Mallet glowed and the journal turned into a pile of spell cards."]')
-    }, () => {
-      dialogue.actorRight.speak('Shinmyoumaru: "What happened?! Where did these come from?!')
-    }, () => {
-      dialogue.setText('[Sumireko took the spell cards in her hand and tried asking them."]')
-    }, () => {
-      dialogue.actorLeft.speak('Sumireko: "Hey! How do I get home?! Can you hear me?!"')
-    }, () => {
-      dialogue.setText('[One of the cards in Sumireko’s hand was a Nue card."]')
-    }, () => {
-      dialogue.setText('[The figure inside the card moved and smiled, before leaving the card and hitting the girl with a kick that sent her flying across the room."]')
-    }, () => {
-      dialogue.setText('[Shinmyoumaru got her Needle Sword, but she was also sent flying across the room when a blue vector arrow hit her."]');
-      dialogue.actorRight.setVisible(false, 300);
-    }, () => {
-      dialogue.actorRight.setFrame(dialogue.nue);
-      dialogue.actorRight.speak('Nue: "Of course I can hear you! Geez, don’t scream in ears!"')
-    }, () => {
-      dialogue.actorRight.speak('Nue: "Oh yeah! Thanks for recovering some of the spell cards for me!"')
-    }, () => {
-      dialogue.actorLeft.speak('Sumireko: "Who are you?! Can I go home now?!"')
-    }, () => {
-      dialogue.actorRight.speak('Nue: "I’m Nue, the coolest shape-shifting alien ever! And no, you can’t!"')
-    }, () => {
-      dialogue.actorLeft.speak('Sumireko: "So you tricked me?!"')
-    }, () => {
-      dialogue.actorRight.speak('Nue: "No, you thought filling the pages would get you home."')
-    }, () => {
-      dialogue.actorRight.speak('Nue: "I was flying peacefully while looking for someone to play a prank at when you suddenly fell from the sky."')
-    }, () => {
-      dialogue.actorRight.speak('Nue: "I followed you from the Bamboo Forest and turned into a page of that old journal you had with you."')
-    }, () => {
-      dialogue.actorRight.speak('Nue: "And what a treasure! This journal contained a lot of Spell Card information on it!"')
-    }, () => {
-      dialogue.actorRight.speak('Nue: "Heaven knows the pranks I can play if I have the book completed in my hands!"')
-    }, () => {
-      dialogue.actorLeft.speak('Sumireko: "If I can’t get home, then you won’t have the spell cards either!"')
-    }, () => {
-      dialogue.setText('[All the true spell cards were still in Sumireko’s hands. Nue was pissed."]')
-    }, () => {
-      dialogue.actorRight.speak('Nue: "You…! Give it back or you’ll regret it!"')
-    }, () => {
-      dialogue.actorLeft.speak('Sumireko: "You want the cards? Come and take them!"')
-    }, () => {
       dialogue.setAutoStep(false);
       dialogue.actorLeft.setVisible(false, 300);
       dialogue.actorRight.setVisible(false, 300);
-      dialogue.setText(""); // TODO: Lunar please replace with a short tutorial
+      dialogue.setText('Drag and drop puzzle pieces to solve the puzzle. Use the right mouse button to rotate.');
       setTimeout(module.begin, 500);
-      setTimeout(() => dialogue.setVisible(false), 5000)
     }
   ];
 
@@ -151,7 +98,7 @@ module.begin = function() {
 
   // Menu assets
   var menu_bg = new createjs.Bitmap("assets/images/menu_bg.jpg");
-
+  
       // Puzzle assets
       cm_piece.push(""); // 0
       cm_piece.push("assets/images/colormatch/red.png"); // 1
@@ -160,26 +107,27 @@ module.begin = function() {
       cm_piece.push("assets/images/colormatch/blue.png"); // 4
       cm_piece.push("assets/images/colormatch/purple.png"); // 5
       cm_piece.push("assets/images/colormatch/white.png"); // 6
-
+  
       cm_piece.push("assets/images/colormatch/correct.png"); // 7
       cm_piece.push("assets/images/colormatch/incorrect.png"); // 8
       cm_piece.push("assets/images/colormatch/correct_icon.png"); // 9
       cm_piece.push("assets/images/colormatch/incorrect_icon.png"); // 10
       cm_piece.push("assets/images/colormatch/space.png"); // 11
-
+      cm_piece.push("assets/images/colormatch/pixel.png"); // 12?
+  
       // Container coordinates
-
+  
       // Add assets to stage
       stage.addChild(menu_bg);
-
+      
       // Populate past guess table
       // Rows for past guesses
-      for(var i=0;i<4;i++) {
+      for(var i=0;i<3;i++) {
           var startx = 600;
           var starty = 50;
           // Columns for past guesses
-          for(var j=0;j<3;j++) {
-              cm_past_guess_container[i][j] = new createjs.Bitmap(cm_piece[4]);
+          for(var j=0;j<4;j++) {
+              cm_past_guess_container[i][j] = new createjs.Bitmap(cm_piece[0]);
               cm_past_guess_container[i][j].x = (startx+(i*150));
               cm_past_guess_container[i][j].y = (starty+(j*130));
               // Alpha
@@ -190,7 +138,7 @@ module.begin = function() {
               stage.addChild(cm_past_guess_container[i][j]);
           }
       }
-
+  
       // Populate past results table
       // Rows for past results
       for(var i=0;i<4;i++) {
@@ -198,7 +146,7 @@ module.begin = function() {
           var starty = 70;
           // Columns for past guesses
           for(var j=0;j<3;j++) {
-              cm_past_guess_container[i][j] = new createjs.Bitmap(cm_piece[10]);
+              cm_past_guess_container[i][j] = new createjs.Bitmap(cm_piece[9]);
               if(i<2) {
                   cm_past_guess_container[i][j].x = (startx+(i*25));
                   cm_past_guess_container[i][j].y = (starty+(j*130));
@@ -215,20 +163,20 @@ module.begin = function() {
               stage.addChild(cm_past_guess_container[i][j]);
           }
       }
-
+  
       // Draw empty circles for piece placement
       for(var i=0;i<4;i++) {
           var startx = 550;
           var starty = 550;
-
+  
           cm_spaces[i] = new createjs.Bitmap(cm_piece[11]);
           cm_spaces[i].x = (startx + (200*i));
           cm_spaces[i].y = starty;
-
+  
           stage.addChild(cm_spaces[i]);
-
+  
           cm_spaces[i].addEventListener("click", handleMouseEvent);
-
+  
           cm_space_id.push(cm_spaces[i].id);
           //console.log(cm_space_id[i]);
   
@@ -240,9 +188,9 @@ module.begin = function() {
           cm_answer.push(getRandomInt(0,5));
           console.log(cm_answer[i]);
       }
-
+  
       // Draw selection pieces (invisible)
-      // Red -
+      // Red - 
       red = new createjs.Shape();
       red.graphics.beginFill("red").drawCircle(0,0,20);
       red.alpha = 0;
@@ -292,6 +240,12 @@ module.begin = function() {
       cm_image.push(new createjs.Bitmap(cm_piece[4]));
       cm_image.push(new createjs.Bitmap(cm_piece[5]));
       cm_image.push(new createjs.Bitmap(cm_piece[6]));
+      cm_image.push(new createjs.Bitmap(cm_piece[7]));
+      cm_image.push(new createjs.Bitmap(cm_piece[8]));
+      cm_image.push(new createjs.Bitmap(cm_piece[9]));
+      cm_image.push(new createjs.Bitmap(cm_piece[10]));
+      cm_image.push(new createjs.Bitmap(cm_piece[11]));
+      cm_image.push(new createjs.Bitmap(cm_piece[12])); // 11, Pixel
 };
 
 
@@ -398,8 +352,96 @@ function handleMouseEvent(event) {
                           console.log("WIN");
                       }
                       else {
-                          // Compare remaining guesses
-                          console.log("Not this time");
+                          // Determine correct / incorrect
+                          var cm_correct = 0;
+                          var cm_incorrect = 0;
+                          var cm_corr = [];
+                          // Get number count
+                          for(var k=0;k<4;k++) {
+                              // Compare against cm_guess[k]
+                              // Only compare at or ahead of k, prevents counting duplicates
+                              for(var l=k;l<6;l++) {
+                                  // l is color
+                                  if(cm_guess[k] == cm_answer[l]) {
+                                      // If k and l match, it is CORRECT
+                                      if(k == l) {
+                                          cm_correct = cm_correct + 1;
+                                      }
+                                      // If k and l do not match, it is INCORRECT
+                                      else {
+                                          cm_incorrect = cm_incorrect + 1;
+                                      }
+                                  }
+                              }
+                          }
+                          // Set correct/incorrect array
+                          for(var k=0;k<cm_correct;k++) {
+                              // Add correct to array
+                              cm_corr.push(1);
+                          }
+                          for(var k=0;k<cm_incorrect;k++) {
+                              // Add correct to array
+                              cm_corr.push(2);
+                          }
+
+                          // Shift past guesses/corrects
+                          // ROW
+                          for(var k=0;k<2;k++) {
+                              // COLUMNS
+                              for(var l=0;l<4;l++) {
+                                  cm_past_guess[k][l] = cm_past_guess[(k+1)][l];
+                                  cm_past_correct[k][l] = cm_past_correct[(k+1)][l];
+                                  // Set images
+                                  var img_num = cm_past_guess[k][l];
+                                  cm_past_guess_container[l][k].image = cm_image[img_num].image;
+                                  var img_num2 = cm_past_correct[k][l];
+                                  if(img_num2 == 0) {
+                                      // Blank
+                                      var img_use = 11;
+                                  }
+                                  else if(img_num2 == 1) {
+                                      // Correct
+                                      var img_use = 8;
+                                  }
+                                  else {
+                                      // Incorrect
+                                      var img_use = 9;
+                                  }
+                                  //console.log("Attempting to set cm_past_guess_container["+k+"]["+l+"] as "+cm_image[img_use].image+"(cm_image["+img_use+"].image])");
+                                  cm_past_guess_container[k][l].image = cm_image[img_use].image;
+                                  console.log("storing "+cm_past_guess[k][l]+" in row "+k+", col "+l);
+                              }
+                          }
+                          // Move current guess/correct to past_[2]
+                          for(var k=0;k<4;k++) {
+                              cm_past_guess[2][k] = cm_guess[k];
+                              //console.log("These should be equal: "+cm_past_guess[2][k]+" & ");
+                              cm_past_correct[2][k] = cm_past_correct[k];
+                              // Set images
+                              var img_num = cm_past_guess[2][k];
+                              cm_past_guess_container[k].image = cm_image[img_num].image;
+                              var img_num2 = cm_past_correct[2][k];
+                              if(img_num2 == 0) {
+                                  // Blank
+                                  var img_use = 11;
+                              }
+                              else if(img_num2 == 1) {
+                                  // Correct
+                                  var img_use = 8;
+                              }
+                              else {
+                                  // Incorrect
+                                  var img_use = 9;
+                              }
+                              cm_past_guess_container[2][k].image = cm_image[img_use].image;
+                          }
+                          // Clear current guess
+                          cm_guess = [7,7,7,7];
+                          // Set images
+                          cm_spaces[0].image = cm_image[10].image;
+                          cm_spaces[1].image = cm_image[10].image;
+                          cm_spaces[2].image = cm_image[10].image;
+                          cm_spaces[3].image = cm_image[10].image;
                       }
 
                   }
@@ -415,6 +457,7 @@ function handleMouseEvent(event) {
   
   // Store last clicked
   clicked_last = clicked;
+
 }
 
 export default module;
