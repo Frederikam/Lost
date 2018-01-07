@@ -75,6 +75,8 @@ function onSelect(stageId) {
   buttons.forEach(button => {
     createjs.Tween.get(button)
       .to({y: button.y + 25}, 500);
+    createjs.Tween.get(buttonText)
+      .to({y: button.y + 25}, 500);
   });
 }
 
